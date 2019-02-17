@@ -339,7 +339,10 @@
         }
 
         /**
-         * Outputs the result of the match of execute and sets custom headers
+         * Outputs the result of the match of execute and sets custom headers.
+         * If the return value of $ret is a object, and it has the function toJSON,
+         * the return value will be set to $ret->toJSON(). The function should return
+         * either an object with public member variables or a array with keys
          * 
          * @param mixed $ret The result that should be displayed or a Response-Object with custom information
          * @return void
@@ -371,6 +374,12 @@
                 $code = $ret->code;
             }else{
                 $value = $ret;
+            }
+
+            if(is_object($value)){
+                if(method_exists($value, 'toJSON')){
+                    $value = $value->toJSON();
+                }
             }
 
             http_response_code($code);
