@@ -2,14 +2,15 @@
 PAF (PHP API Framework) is a Framework to create simple API's through PHP and outputting them as JSON.
 
 ## Table of contents
-- Setting up
-- Example
-- Instanciation
-    - Methods
-- Creating routes
-    - Route
-- Handling return values
-    - Response
+- [Setting up](#setting-up)
+- [Example](#example)
+- [Instanciation](#instanciation)
+    - [Methods](#methods)
+- [Creating routes](#creating-routes)
+    - [Route](#route)
+    - [Request](#request)
+- [Handling return values](#handling-return-values)
+    - [Response](#response)
 
 ## Setting up
 1. Download the `PAF.php` file, that includes the needed classes.
@@ -70,7 +71,7 @@ By requesting `GET /` the following JSON-Object will be returned:
 }
 ```
 
-By requesting `GET /user/<id>` with `id` beeing a integer, either a JSON-Object beeing the user-object or a error code (-1) will be returned and the http-response-code will be set to 500 (see Response) // TODO:
+By requesting `GET /user/<id>` with `id` beeing a integer, either a JSON-Object beeing the user-object or a error code (-1) will be returned and the http-response-code will be set to 500 (see [Response](#response))
 
 ## Instanciation
 To create a new PAF-Object write the following line:
@@ -166,9 +167,9 @@ Adds a new route to the instance
 
 `map(METHOD, PATH, TARGET, NAME)`
 
-- `METHOD` is the http-method in caps
-- `PATH` is the path that should be matched (see Path) // TODO:
-- `TARGET` is the function that is executed when this route is matched. It is executed with a request-array as a argument (see Request) // TODO:
+- `METHOD` is the http-method in caps, or a wildcard-character (`*`) for any method
+- `PATH` is the path that should be matched (see [Path](#path))
+- `TARGET` is the function that is executed when this route is matched. It is executed with a request-array as a argument (see [Request](#request))
 - `NAME` is the name of the route (optional)
 
 ```php
@@ -178,7 +179,7 @@ $router->map('GET', '/', function($request){
 ```
 
 #### addRoute
-Does the same as `$router->map(...)`, but uses a Route-object instead (see Route) // TODO:
+Does the same as `$router->map(...)`, but uses a Route-object instead (see [Route](#route))
 
 ```php
 $route = new Route('GET', '/', function($request){
@@ -208,3 +209,62 @@ $router->addRoute($route);
 ```
 
 ### Route
+This class defines a route:
+```php
+$route = new Route(METHOD, PATH, TARGET, NAME);
+```
+
+- `METHOD` is the http-method in caps, or a wildcard-character (`*`) for any method
+- `PATH` is the path that should be matched (see [Path](#path))
+- `TARGET` is the function that is executed when this route is matched. It is executed with a request-array as a argument (see [Request](#request))
+- `NAME` is the name of the route (optional)
+
+#### Path
+Path is a string. There are three types of paths:
+1. *static:* `/users`
+2. *dynamic:* `/users/[i:id]`
+3. *wildcard:* `*`
+
+*Dynamic* paths contain at least one parameter. Parameters are defined as following:
+`[type:name]`<br>
+Type can be:
+- `'*'`, `''` for *any type*
+- `'s'` for a *string*
+- `'i'` for a *integer*
+- `'n'` for a *number*
+
+The parameters will be contained in the request-array of the matched-routes target-function (see [Request](#request))
+
+### Request
+This array will be passed on to the matched-routes target-function as a parameter.
+
+```php
+[
+    'route' => Route Object,
+    'method' => string,
+    'path' => string,
+    'params' => [],
+]
+```
+
+The params array contains all parameters of this route with their name as the key:
+```php
+[
+    [...],
+    'params' => [
+        'id' => 10
+    ]
+]
+```
+
+If authorization is enabled for this instance, the request-array also contains the key authorization with the content of the authorization header:
+```php
+[
+    [...],
+    'authorization' => '202cb962ac59075b964b07152d234b70'
+]
+```
+
+## Handling return values
+
+### Response

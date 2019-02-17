@@ -1,5 +1,12 @@
 <?php
     /**
+     * PAF (PHP API Framework) is a Framework to create simple API's
+     * through PHP and outputting them as JSON.
+     * 
+     * @see {@link https://github.com/m-thalmann/PAF}
+     */
+
+    /**
      * This class is the main class to use the PHP API Framework.
      * It handels the routing and matching of the routes
      * 
