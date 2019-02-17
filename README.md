@@ -239,6 +239,16 @@ The parameters will be contained in the request-array of the matched-routes targ
 This array will be passed on to the matched-routes target-function as a parameter.
 
 ```php
+[...]
+
+$router->map('GET', '/', function($request){
+    [...]
+    return null;
+});
+```
+
+It contains the following items:
+```php
 [
     'route' => Route Object,
     'method' => string,
@@ -266,5 +276,62 @@ If authorization is enabled for this instance, the request-array also contains t
 ```
 
 ## Handling return values
+The target-function of the matched route has to return a value, that is displayed. It can be either a `Response`-Object or anything else.
+
+If it is an object (other than `Response`) and has a function called
+`toJSON()`, it will be executed and the output of that function will be used, otherwise the returned value will be encoded to JSON with `json_encode(...)`.
+
+```php
+[...]
+
+class User{
+    private $name = null;
+
+    [...]
+
+    function toJSON(){
+        return [
+            "name" => $this->name
+        ];
+    }
+}
+
+[...]
+
+$router->map('GET', '/user', function(){
+    return new User('Foo'); // toJSON() will be executed
+});
+```
+
+If it is a `Response`-Object, its value-property will be used and the http-response-code will be set to its code-property (see [Response](#response)).
 
 ### Response
+This object can be returned by the target-function of a matched route
+```php
+$response = new Response(VALUE, CODE);
+```
+
+- `VALUE` is the return value, that should be displayed
+- `CODE` is the http-response-code for the request (see https://httpstatuses.com/)
+
+These two properties are public member variables, so they can be changed very easily.
+
+There are also some methods to set the code:
+- `ok()` -> 200
+- `created()` -> 201
+- `badRequest()` -> 400
+- `unauthorized()` -> 401
+- `forbidden()` -> 403
+- `notFound()` -> 404
+- `methodNotAllowed()` -> 405
+- `conflict()` -> 409
+- `error()` -> 500
+- `notImplemented()` -> 501
+
+```php
+[...]
+
+$router->map('GET', '/user', function(){
+    return new Response(null, 500);
+});
+```
