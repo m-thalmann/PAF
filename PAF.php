@@ -293,8 +293,8 @@
 
                     if($method == '*' || $method == $requestMethod){
                         if($path == '*'){
-                            return true;
                             $this->resolve($target($request));
+                            return true;
                         }else{
                             $requestSegments = explode('/', $requestUrl);
                             $pathSegments = explode('/', $path);
@@ -343,6 +343,16 @@
             }else{
                 return false;
             }
+        }
+
+        /**
+         * Is a alias for execute()
+         * 
+         * @see execute
+         * @return bool True if a match was found otherwise false
+         */
+        public function exec(){
+            return $this->execute();
         }
 
         /**
@@ -467,7 +477,7 @@
                 throw new Exception('Method must be string');
             }
 
-            if(!in_array($method, PAF::getMethods())) {
+            if($method != '*' && !in_array($method, PAF::getMethods())) {
                 throw new Exception('Method not supported');
             }
 
@@ -584,7 +594,7 @@
          */
         public function verify($methods = null) {
             if(is_array($methods)){
-                if(!in_array($this->method, $methods)){
+                if($this->method != '*' && !in_array($this->method, $methods)){
                     throw new Exception('Method not allowed on this router');
                 }
             }

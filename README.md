@@ -12,6 +12,7 @@ It was inspired by [AltoRouter](https://github.com/dannyvankooten/AltoRouter)
     - [Request](#request)
 - [Handling return values](#handling-return-values)
     - [Response](#response)
+- [Catch unmapped routes](#catch-unmapped-routes)
 
 ## Setting up
 1. Download the `PAF.php` file, that includes the needed classes.
@@ -334,5 +335,17 @@ There are also some methods to set the code:
 
 $router->map('GET', '/user', function(){
     return new Response(null, 500);
+});
+```
+
+## Catch unmapped routes
+By setting the http-method and the path to `*`, every route will be matched. Only add this as the last route, to catch unmapped routes!
+
+```php
+[...]
+
+$router->map('*', '*', function(){
+    $response = new Response(null);
+    return $response->badRequest();
 });
 ```
