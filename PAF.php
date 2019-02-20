@@ -243,7 +243,7 @@
          */
         public function setBasePath($path = '') {
             if(is_string($path)){
-                $this->basePath = strtolower($path);
+                $this->basePath = $path;
             }else{
                 throw new Exception('Path must be string');
             }
@@ -266,7 +266,7 @@
          */
         public function execute() {
             $requestUrl = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/';
-            
+			
             if(substr($requestUrl, 0, strlen($this->basePath)) == $this->basePath){
                 $requestUrl = substr($requestUrl, strlen($this->basePath));
 
@@ -511,7 +511,7 @@
                 throw new Exception('Path must be string');
             }
 
-            $this->path = strtolower($path);
+            $this->path = $path;
         }
 
         /**
