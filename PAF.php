@@ -279,6 +279,10 @@
                     'params' => [],
                 ];
 
+                if($requestMethod == 'POST' || $requestMethod == 'PUT'){
+                    $request['post'] = json_decode(file_get_contents('php://input'));
+                }
+
                 if($this->authorization){
                     $request['authorization'] = $_SERVER['HTTP_AUTHORIZATION'];
                 }

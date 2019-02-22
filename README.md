@@ -269,7 +269,15 @@ The params array contains all parameters of this route with their name as the ke
 ]
 ```
 
-If authorization is enabled for this instance, the request-array also contains the key authorization with the content of the authorization header:
+If the method is either `POST` or `PUT`, the request-array also contains the key `post` with the contents of the payload:
+```php
+[
+    [...],
+    'post' => <JSON_OBJECT>
+]
+```
+
+If authorization is enabled for this instance, the request-array also contains the key `authorization` with the content of the authorization header:
 ```php
 [
     [...],
