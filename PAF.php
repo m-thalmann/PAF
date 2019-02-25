@@ -280,7 +280,7 @@
                 ];
 
                 if($requestMethod == 'POST' || $requestMethod == 'PUT'){
-                    $request['post'] = json_decode(file_get_contents('php://input'));
+                    $request['post'] = json_decode(file_get_contents('php://input'), true);
                 }
 
                 if($this->authorization){
