@@ -15,42 +15,14 @@
      */
     class PAF {
         /**
-         * @var array Array of all available http-methods
-         */
-        private static $METHODS = [
-            'GET',
-            'PUT',
-            'POST',
-            'DELETE',
-            'HEAD',
-            'OPTIONS'
-        ];
-
-        /**
-         * @var array Array of all allowed http-methods for this instance
-         */
-        private $allowedMethods = null;
-
-        /**
          * @var bool Boolean whitch defines if CORS should be enabled for this instance
          */
         private $cors_enabled = false;
 
         /**
-         * @var bool Boolean whitch defines if a http-authorization-header will be set,
-         *  and if it's set, it will be passed on to the target function
-         */
-        private $authorization = false;
-
-        /**
          * @var array Array of all routes for this instance
          */
         private $routes = array();
-
-        /**
-         * @var array Array of the positions of the named-routes in the routes-Array
-         */
-        private $namedRoutes = array();
 
         /**
          * @var string String of the path, from where on the route will be matched
@@ -59,80 +31,18 @@
          */
         private $basePath = '';
 
+        private $headers = [];
+
         /**
          * Creates PAF-Router
          * 
          * @param string $basePath
-         * @param array $allowedMethods
          */
-        public function __construct($basePath = '', $allowedMethods = null) {
+        public function __construct($basePath = '', $headers = []) {
             $this->setBasePath($basePath);
-            $this->setAllowedMethods($allowedMethods);            
+            $this->setHeaders($headers);
         }
 
-        /**
-         * Sets the allowed Methods for this instance
-         * 
-         * @param array $allowedMethods
-         * @return void
-         */
-        public function setAllowedMethods($allowedMethods){
-            if(empty($allowedMethods)){
-                $this->allowedMethods = PAF::$METHODS;
-            }else{
-                if(!is_array($allowedMethods)){
-                    throw new Exception('Allowed methods must be array');
-                }
-
-                $this->allowedMethods = $allowedMethods;
-            }
-        }
-
-        /**
-         * Returns the allowed Methods for this instance
-         * 
-         * @return array All allowed Methods
-         */
-        public function getAllowedMethods(){
-            return $this->allowedMethods;
-        }
-
-        /**
-         * Returns the available Methods
-         * 
-         * @return array All available Methods
-         */
-        public static function getMethods(){
-            return PAF::$METHODS;
-        }
-
-        /**
-         * Checks the type of value according to $type:
-         * - '*' -> any type
-         * - ''  -> alias for '*'
-         * - 's' -> string
-         * - 'i' -> integer
-         * - 'n' -> number
-         * 
-         * @param string $type
-         * @param string $value
-         * @return mixed false if the type does not match or converts value to type and returns it
-         */
-        private static function convertParam($type, $value){
-            if($type == '*' || $type == 's' || $type == ''){
-                return $value;
-            }else if($type == 'i'){
-                if(ctype_digit($value)){
-                    return intval($value);
-                }
-            }else if($type == 'n'){
-                if(is_numeric($value)){
-                    return doubleval($value);
-                }
-            }
-            return false;
-        }
-        
         /**
          * Sets if CORS is enabled for this instance
          * 
@@ -150,89 +60,6 @@
          */
         public function getCorsEnabled(){
             return $this->cors_enabled;
-        }
-
-        /**
-         * Sets if a http-authorization-header will be set and returned
-         * 
-         * @param bool $enabled
-         * @return void
-         */
-        public function setAuthorization($enabled){
-            $this->authorization = !!$enabled;
-        }
-
-        /**
-         * Returns if a http-authorization-header will be set
-         * 
-         * @return bool
-         */
-        public function getAuthorization(){
-            return $this->authorization;
-        }
-
-        /**
-         * Returns all routes that will be matched by this instance
-         * 
-         * @return array All routes
-         */
-        public function getRoutes() {
-            return $this->routes;
-        }
-
-        /**
-         * Returns the route named $name
-         * 
-         * @param string $name
-         * @return Route The route named $name or null if not found
-         */
-        public function getNamedRoute($name){
-            if(empty($name) || !is_string($name)){
-                return null;
-            }
-
-            if(array_key_exists($name, $this->namedRoutes)){
-                return $this->routes[$this->namedRoutes[$name]];
-            }
-        }
-
-        /**
-         * Adds a new Route to the routes-array
-         * 
-         * @param string $method
-         * @param string $route
-         * @param callable $target
-         * @param string $name (optional)
-         * @throws Exception
-         * @return void
-         */
-        public function map($method, $route, $target, $name = null) {
-            $this->addRoute(new Route($method, $route, $target, $name));
-        }
-        
-        /**
-         * Adds a new Route to the routes-array
-         * 
-         * @param Route $route
-         * @throws Exception
-         * @return void
-         */
-        public function addRoute($route){
-            if($route instanceof Route && $route->verify($this->allowedMethods)){
-                if($route->getName()){
-                    if(array_key_exists($route->getName(), $this->namedRoutes)){
-                        throw new Exception('Name already used');
-                    }
-                }
-
-                $this->routes[] = $route;
-
-                if($route->getName()){
-                    $this->namedRoutes[$route->getName()] = max(array_keys($this->routes));
-                }
-            }else{
-                throw new Exception('Route must be Route and be valid');
-            }
         }
 
         /**
@@ -259,6 +86,120 @@
         }
 
         /**
+         * Sets custom headers
+         * 
+         * @param array $headers
+         *  [
+         *      "name" => "value",
+         *      ...
+         *  ]
+         * @return void
+         */
+        public function setHeaders($headers){
+            if(!is_array($headers)){
+                throw new Exception('Headers must be array');
+            }
+
+            foreach($headers as $key => $header){
+                $this->setHeader($key, $header);
+            }
+        }
+
+        /**
+         * Sets a custom header
+         * 
+         * @param string $name
+         * @param string $value
+         * @return void
+         */
+        public function setHeader($name, $value){
+            if(is_string($name) && $value == null){
+                unset($this->headers[$name]);
+            }
+            if(!is_string($name) || !is_string($value)){
+                throw new Exception('Name and value must be string');
+            }
+
+            $this->headers[$name] = $value;
+        }
+
+        /**
+         * Returns the custom headers for this router
+         * 
+         * @return array
+         */
+        public function getHeaders(){
+            return $this->headers;
+        }
+
+        /**
+         * Returns the custom header for this router
+         * 
+         * @param string $name
+         * @return string
+         */
+        public function getHeader($name){
+            if(!is_string($name)){
+                throw new Exception('Name must be string');
+            }
+
+            $ret = null;
+
+            if(isset($this->headers[$name])){
+                $ret = $this->headers[$name];
+            }
+
+            return $ret;
+        }
+
+        /**
+         * Returns all routes that will be matched by this instance
+         * 
+         * @return array All routes
+         */
+        public function getRoutes() {
+            return $this->routes;
+        }
+
+        /**
+         * Adds a new Route to the routes-array
+         * 
+         * @param string $method
+         * @param string $route
+         * @param callables $target1, $target2... (in $targets)
+         * 
+         * @throws Exception
+         * @return void
+         */
+        public function map($method, $route) {
+            $targets = [];
+            $num_args = func_num_args();
+
+            if($num_args > 2){
+                for($i = 2; $i < $num_args; $i++){
+                    $targets[] = func_get_arg($i);
+                }
+            }
+
+            $this->addRoute(new Route($method, $route, $targets));
+        }
+
+        /**
+         * Adds a new Route to the routes-array
+         * 
+         * @param Route $route
+         * @throws Exception
+         * @return void
+         */
+        public function addRoute($route){
+            if($route instanceof Route && $route->verify()){
+                $this->routes[] = $route;
+            }else{
+                throw new Exception('Route must be Route and be valid');
+            }
+        }
+
+        /**
          * Matches the request-url with the routes. The first successfull match
          * will be used and executed
          * 
@@ -275,29 +216,26 @@
                 $request = [
                     'route' => null,
                     'method' => $requestMethod,
+                    'url' => (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]",
                     'path' => $requestUrl,
+                    'authorization' => isset($_SERVER['HTTP_AUTHORIZATION']) ? $_SERVER['HTTP_AUTHORIZATION'] : null,
                     'params' => [],
+                    'post' => null,
                 ];
 
                 if($requestMethod == 'POST' || $requestMethod == 'PUT'){
                     $request['post'] = json_decode(file_get_contents('php://input'), true);
                 }
 
-                if($this->authorization){
-                    $request['authorization'] = $_SERVER['HTTP_AUTHORIZATION'];
-                }
-
                 foreach($this->routes as $route){
                     $method = $route->getMethod();
                     $path = $route->getPath();
-                    $target = $route->getTarget();
-                    $name = $route->getName();
 
                     $request['route'] = $route;
 
                     if($method == '*' || $method == $requestMethod){
                         if($path == '*'){
-                            $this->resolve($target($request));
+                            $this->resolve($route, $request);
                             return true;
                         }else{
                             $requestSegments = explode('/', $requestUrl);
@@ -335,7 +273,7 @@
 
                                 if($ok){
                                     $request['params'] = $params;
-                                    $this->resolve($target($request));
+                                    $this->resolve($route, $request);
                                     return true;
                                 }
                             }
@@ -368,44 +306,119 @@
          * @param mixed $ret The result that should be displayed or a Response-Object with custom information
          * @return void
          */
-        private function resolve($ret){
+        private function resolve($route, $request){
             header('Content-Type: application/json');
 
-            $allowedMethods = "";
+            $allowedMethods = [];
 
-            for($i = 0; $i < count($this->allowedMethods); $i++){
-                $allowedMethods .= $this->allowedMethods[$i];
-
-                if($i < count($this->allowedMethods)-1){
-                    $allowedMethods .= ', ';
+            foreach($this->routes as $route){
+                $method = $route->getMethod();
+                if(!in_array($method, $allowedMethods)){
+                    $allowedMethods[] = $route->getMethod();
                 }
             }
 
-            header("Access-Control-Allow-Methods: " . $allowedMethods);
+            header("Access-Control-Allow-Methods: " . implode(', ', $allowedMethods));
 
             if($this->cors_enabled){
                 header("Access-Control-Allow-Origin: *");
             }
+
+            foreach($this->headers as $key => $header){
+                header("$key: $header");
+            }
+
+            $targets = $route->getTargets();
+
+            $next = null;
+            
+            if(count($targets) > 1){
+                $last_target = 0;
+
+                $next = function($data) use ($targets, $last_target, $next){
+                    $_next = null;
+
+                    $last_target++;
+
+                    if(count($targets) - $last_target > 1){
+                        $_next = function($data) use ($next){
+                            $next($data);
+                        };
+                    }
+
+                    return $targets[$last_target]($data, $_next);
+                };
+            }
+
+            $ret = $targets[0]($request, $next);
             
             $value = null;
             $code = 200;
 
             if($ret instanceof Response){
+                if(!$ret->verify()){
+                    throw new Exception('Response object is not correct');
+                }
+
                 $value = $ret->value;
                 $code = $ret->code;
             }else{
                 $value = $ret;
             }
 
-            if(is_object($value)){
-                if(method_exists($value, 'toJSON')){
-                    $value = $value->toJSON();
-                }
-            }
+            $value = PAF::convertResponse($value);
 
             http_response_code($code);
 
             echo json_encode($value);
+        }
+
+        /**
+         * Checks the type of value according to $type:
+         * - '*' -> any type
+         * - ''  -> alias for '*'
+         * - 's' -> string
+         * - 'i' -> integer
+         * - 'n' -> number
+         * 
+         * @param string $type
+         * @param string $value
+         * @return mixed false if the type does not match or converts value to type and returns it
+         */
+        private static function convertParam($type, $value){
+            if($type == '*' || $type == 's' || $type == ''){
+                return $value;
+            }else if($type == 'i'){
+                if(ctype_digit($value)){
+                    return intval($value);
+                }
+            }else if($type == 'n'){
+                if(is_numeric($value)){
+                    return doubleval($value);
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Converts the return value (response), by calling, if possible, toJSON on the
+         * object(s)
+         */
+        private static function convertResponse($value){
+            if(is_object($value)){
+                if(method_exists($value, 'toJSON')){
+                    $value = $value->toJSON();
+                }
+            }else if(is_array($value)){
+                $ret = [];
+                foreach($value as $key => $val){
+                    $ret[$key] = PAF::convertResponse($val);
+                }
+
+                $value = $ret;
+            }
+
+            return $value;
         }
     }
 
@@ -438,29 +451,26 @@
         private $path = null;
 
         /**
-         * @var callable The function that should be executed when this
+         * @var array The functions that should be executed when this
          *  route is matched. Has to return value that should be displayed
+         * 
+         *  function($request, $next){ ... }
+         * 
+         *  $next is the function that is called to execute the next target function
          */
-        private $target = null;
-
-        /**
-         * @var string The name of this route
-         */
-        private $name = null;
+        private $targets = [];
 
         /**
          * Creates Route
          * 
          * @param string $method
          * @param string $path
-         * @param string $target
-         * @param string $name
+         * @param array $targets
          */
-        public function __construct($method, $path, $target, $name) {
+        public function __construct($method, $path, $targets) {
             $this->setMethod($method);
             $this->setPath($path);
-            $this->setTarget($target);
-            $this->setName($name);
+            $this->setTargets($targets);
         }
 
         /**
@@ -479,10 +489,6 @@
 
             if(!is_string($method)) {
                 throw new Exception('Method must be string');
-            }
-
-            if($method != '*' && !in_array($method, PAF::getMethods())) {
-                throw new Exception('Method not supported');
             }
 
             $this->method = strtoupper($method);
@@ -528,81 +534,54 @@
         }
 
         /**
-         * Sets the target this route should execute when matched
-         * @see $target
+         * Sets the targets this route should execute when matched
+         * @see $targets
          * 
-         * @param callable $target
+         * @param array $targets
          * @throws Exception
          * @return void
          */
-        public function setTarget($target) {
-            if(empty($target)){
-                $this->target = null;
+        public function setTargets($targets) {
+            if(empty($targets)){
+                $this->targets = [];
                 return;
             }
 
-            if(!is_callable($target)) {
-                throw new Exception('Target must be callable');
+            if(!is_array($targets)){
+                if(is_callable($targets)){
+                    $targets = [$targets];
+                }else{
+                    throw new Exception('Targets must be array of callables');
+                }
             }
 
-            $this->target = $target;
+            foreach($targets as $target){
+                if(!is_callable($target)) {
+                    throw new Exception('Targets must be callable');
+                }
+            }
+
+            $this->targets = $targets;
         }
 
         /**
-         * Returns the target this route should execute when matched
+         * Returns the targets this route should execute when matched
          * 
-         * @return callable
+         * @return array
          */
-        public function getTarget() {
-            return $this->target;
-        }
-
-        /**
-         * Sets the name of this route
-         * @see $name
-         * 
-         * @param string $name
-         * @throws Exception
-         * @return void
-         */
-        public function setName($name) {
-            if(empty($name)){
-                $this->name = null;
-                return;
-            }
-
-            if(!is_string($name)) {
-                throw new Exception('Name must be string');
-            }
-
-            $this->name = $name;
-        }
-
-        /**
-         * Returns the name of this route
-         * 
-         * @return string
-         */
-        public function getName() {
-            return $this->name;
+        public function getTargets() {
+            return $this->targets;
         }
 
         /**
          * Checks if this route is valid:
          *  - method, path and target are not null
-         *  - the method is supported (contained in $methods)
          * 
-         * @param array $methods The supported methods (optional)
          * @throws Exception
          * @return bool True if valid otherwise false
          */
-        public function verify($methods = null) {
-            if(is_array($methods)){
-                if($this->method != '*' && !in_array($this->method, $methods)){
-                    throw new Exception('Method not allowed on this router');
-                }
-            }
-            return !empty($this->method) && !empty($this->path) && !empty($this->target);
+        public function verify() {
+            return !empty($this->method) && !empty($this->path) && !empty($this->targets);
         }
     }
 
@@ -632,6 +611,15 @@
         public function __construct($value = null, $code = 200) {
             $this->value = $value;
             $this->code = $code;
+        }
+
+        /**
+         * Verifies if this object is correct
+         * 
+         * @return bool true if correct, otherwise false
+         */
+        public function verify(){
+            return !empty($this->value) && !empty($this->code) && is_int($this->code);
         }
 
         /*
