@@ -1,6 +1,6 @@
 # PAF
 PAF (PHP API Framework) is a Framework to create simple API's through PHP and outputting them as JSON.<br>
-It was inspired by [AltoRouter](https://github.com/dannyvankooten/AltoRouter)
+It was inspired by [AltoRouter](https://github.com/dannyvankooten/AltoRouter) and [ExpressJS](https://expressjs.com/)
 
 ## Table of contents
 - [Setting up](#setting-up)
@@ -13,6 +13,8 @@ It was inspired by [AltoRouter](https://github.com/dannyvankooten/AltoRouter)
 - [Handling return values](#handling-return-values)
     - [Response](#response)
 - [Catch unmapped routes](#catch-unmapped-routes)
+- [Examples](#examples)
+    - [Authorization](#authorization)
 
 ## Setting up
 1. Download the `PAF.php` file, that includes the needed classes.
@@ -82,36 +84,20 @@ $router = new PAF();
 ```
 The constructor has two optional parameters:
 ```php
-$router = new PAF($basePath, $allowedMethods);
+$router = new PAF($basePath, $headers);
 ```
 `$basePath` is the path from where on the route will be matched<br>
-`$allowedMethods` is an array with http-methods that are allowed for this instance
+`$headers` is an array with http-headers with the key beeing the name of it and the value beeing the header-value
 
 Example:
 ```php
-$router = new PAF('/api', ['GET', 'POST', 'OPTIONS']);
+$router = new PAF('/api', [
+    "Access-Control-Allow-Headers" => "X-Custom-Header"
+]);
 ```
 
 ### Methods
 The PAF-Object has several methods:
-
-#### set/getAllowedMethods
-Sets/returns the allowed http-methods for this instance
-
-*Default:* all from `PAF::getMethods()`
-
-```php
-$router->setAllowedMethods(['GET', 'POST', 'OPTIONS']);
-
-print_r($router->getAllowedMethods()); // returns an array of strings
-```
-
-#### (static) getMethods
-Returns all available http-methods for the framework
-
-```php
-print_r(PAF::getMethods()); // returns an array of strings
-```
 
 #### set/getCorsEnabled
 Sets/returns if CORS should be enabled for this instance
@@ -124,17 +110,6 @@ $router->setCorsEnabled(true);
 echo $router->getCorsEnabled(); // returns true in this case
 ```
 
-#### set/getAuthorization
-Sets/returns if a http-authorization-header will be set. If it is set to true, the target-function will recieve the header-value in the request-object
-
-*Default:* `false`
-
-```php
-$router->setAuthorization(true);
-
-echo $router->getAuthorization(); // returns true in this case
-```
-
 #### set/getBasePath
 Sets/returns the base-path of the instance. The base-path is the path from where on the route should be matched.
 
@@ -143,9 +118,40 @@ For example: `https://example.com/api/load` and `basePath` is set to `/api` then
 *Default:* `''`
 
 ```php
-$router->setAuthorization(true);
+$router->setBasePath('/api');
 
-echo $router->getAuthorization(); // returns true in this case
+echo $router->getBasePath();
+```
+
+#### set/getHeaders
+Sets/returns the custom headers for this router in a array:
+
+```php
+[
+    "Access-Control-Allow-Headers" => "X-Custom-Header",
+    ...
+]
+```
+
+*Default:* `[]`
+
+```php
+$router->setHeaders([
+    "Access-Control-Allow-Headers" => "X-Custom-Header"
+]);
+
+echo $router->getHeaders();
+```
+
+#### set/getHeader
+Sets/returns the custom header with the specified key for this router
+
+_TIPP:_ By setting the value of the header to `null` it will be removed
+
+```php
+$router->setHeader("Access-Control-Allow-Headers", "X-Custom-Header");
+
+echo $router->getHeader("Access-Control-Allow-Headers");
 ```
 
 #### getRoutes
@@ -157,27 +163,19 @@ Returns all routes, that should be matched for this instance
 print_r($router->getRoutes());
 ```
 
-#### getNamedRoutes
-Returns the route with the name specified in the argument
-
-```php
-print_r($router->getNamedRoute('default'));
-```
-
 #### map
 Adds a new route to the instance
 
-`map(METHOD, PATH, TARGET, NAME)`
+`map(METHOD, PATH, TARGET1, TARGET2, ...)`
 
 - `METHOD` is the http-method in caps, or a wildcard-character (`*`) for any method
 - `PATH` is the path that should be matched (see [Path](#path))
-- `TARGET` is the function that is executed when this route is matched. It is executed with a request-array as a argument (see [Request](#request))
-- `NAME` is the name of the route (optional)
+- `TARGET1, TARGET2, ...` are the function that are executed when this route is matched, where `TARGET1` is executed directly and only its output is used (see [Targets](#targets)).
 
 ```php
 $router->map('GET', '/', function($request){
     return 'Success';
-}, 'default');
+});
 ```
 
 #### addRoute
@@ -186,7 +184,7 @@ Does the same as `$router->map(...)`, but uses a Route-object instead (see [Rout
 ```php
 $route = new Route('GET', '/', function($request){
     return 'Success';
-}, 'default');
+});
 
 $router->addRoute($route);
 ```
@@ -200,26 +198,28 @@ Before the call to this function, no output to the document is allowed (for exam
 echo $router->execute();
 ```
 
+#### exec
+Is a alias for `execute`
+
 ## Creating routes
 Routes can be created with either of the two following methods:
 ```php
-$router->map(METHOD, PATH, TARGET, NAME);
+$router->map(METHOD, PATH, TARGET1, ...);
 ```
 ```php
-$route = new Route(METHOD, PATH, TARGET, NAME);
+$route = new Route(METHOD, PATH, [TARGET1, TARGET2, ...]);
 $router->addRoute($route);
 ```
 
 ### Route
 This class defines a route:
 ```php
-$route = new Route(METHOD, PATH, TARGET, NAME);
+$route = new Route(METHOD, PATH, [TARGET1, TARGET2, ...]);
 ```
 
 - `METHOD` is the http-method in caps, or a wildcard-character (`*`) for any method
 - `PATH` is the path that should be matched (see [Path](#path))
-- `TARGET` is the function that is executed when this route is matched. It is executed with a request-array as a argument (see [Request](#request))
-- `NAME` is the name of the route (optional)
+- `TARGET1, TARGET2, ...` are the function that are executed when this route is matched, where `TARGET1` is executed directly and only its output is used (see [Targets](#targets)).
 
 #### Path
 Path is a string. There are three types of paths:
@@ -237,6 +237,30 @@ Type can be:
 
 The parameters will be contained in the request-array of the matched-routes target-function (see [Request](#request))
 
+#### Targets
+The targets are the functions that contain the logic of the route. The first target-function is executed directly by the PAF-Instance.
+It recieves 2 arguments: The request-array (see [Request](#request)) and a _next-function_. The next ones will recieve a data-argument, that is the one passed to the _next-function_ and a new _next-function_.
+
+The _next-function_ is null, if there is no next target function, otherwise it can be called and returns the return-value of the next target function and so on.
+Only the output from the first target-function will be displayed.
+
+```php
+$router->map('GET', '/load/[i:id]', function($request, $next){
+    $ret = $next($request['params']['id']);
+
+    if($ret == null){
+        return new Response(null, 404); // not found
+    }else{
+        return $ret;
+    }
+}, function($id){
+    // Search in DB
+    [ ... ]
+
+    return $user;
+});
+```
+
 ### Request
 This array will be passed on to the matched-routes target-function as a parameter.
 
@@ -252,10 +276,13 @@ $router->map('GET', '/', function($request){
 It contains the following items:
 ```php
 [
-    'route' => Route Object,
-    'method' => string,
-    'path' => string,
-    'params' => [],
+    'route' => Route Object, // Object of the matched route
+    'method' => string, // The request-method (same as in Route Object)
+    'url' => string, // The full url for this request
+    'path' => string, // The matched path (same as in Route Object)
+    'authorization' => string | null, // The http-authorization-header
+    'params' => [], // The parameters for the request
+    'post' => Object | null, // The post-payload
 ]
 ```
 
@@ -269,7 +296,7 @@ The params array contains all parameters of this route with their name as the ke
 ]
 ```
 
-If the method is either `POST` or `PUT`, the request-array also contains the key `post` with the contents of the payload:
+If the method is either `POST` or `PUT`, the request-array also contains the contents of the payload:
 ```php
 [
     [...],
@@ -277,11 +304,11 @@ If the method is either `POST` or `PUT`, the request-array also contains the key
 ]
 ```
 
-If authorization is enabled for this instance, the request-array also contains the key `authorization` with the content of the authorization header:
+If the http-authorization-header is not undefined, the request-array also contains the content of the authorization header:
 ```php
 [
     [...],
-    'authorization' => '202cb962ac59075b964b07152d234b70'
+    'authorization' => 'Bearer 202cb962ac59075b964b07152d234b70'
 ]
 ```
 
@@ -356,4 +383,33 @@ $router->map('*', '*', function(){
     $response = new Response(null);
     return $response->badRequest();
 });
+```
+
+## Examples
+### Authorization
+```php
+$auth = function($request){
+    $ret = false;
+
+    if(!empty($request['authorization'])){
+        // Check if token is correct
+        [...]
+
+        if($is_correct){
+            $ret = true;
+        }
+    }
+
+    return $ret;
+};
+
+$router->map('GET', '/load', function($request, $next){
+    if($next($request)){
+        // Get user
+        return $user;
+    }else{
+        $response = new Response(null);
+        return $response->unauthorized();
+    }
+}, $auth);
 ```
