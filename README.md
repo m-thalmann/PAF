@@ -35,7 +35,7 @@ It was inspired by [AltoRouter](https://github.com/dannyvankooten/AltoRouter) an
 <?php
     require_once 'path/to/PAF.php';
 
-    $router = new PAF('/api', ['GET']);
+    $router = new PAF('/api');
 
     $router->setCorsEnabled(true);
 
