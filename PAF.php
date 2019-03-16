@@ -619,7 +619,7 @@
          * @return bool true if correct, otherwise false
          */
         public function verify(){
-            return !empty($this->value) && !empty($this->code) && is_int($this->code);
+            return !empty($this->code) && is_int($this->code);
         }
 
         /*
