@@ -407,7 +407,7 @@
         private static function convertResponse($value){
             if(is_object($value)){
                 if(method_exists($value, 'toJSON')){
-                    $value = $value->toJSON();
+                    $value = PAF::convertResponse($value->toJSON());
                 }
             }else if(is_array($value)){
                 $ret = [];
