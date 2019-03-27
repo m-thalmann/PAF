@@ -235,7 +235,7 @@
 
                     if($method == '*' || $method == $requestMethod){
                         if($path == '*'){
-                            $this->resolve($route, $request);
+                            $this->resolve($request);
                             return true;
                         }else{
                             $requestSegments = explode('/', $requestUrl);
@@ -273,7 +273,7 @@
 
                                 if($ok){
                                     $request['params'] = $params;
-                                    $this->resolve($route, $request);
+                                    $this->resolve($request);
                                     return true;
                                 }
                             }
@@ -298,37 +298,14 @@
         }
 
         /**
-         * Outputs the result of the match of execute and sets custom headers.
-         * If the return value of $ret is a object, and it has the function toJSON,
-         * the return value will be set to $ret->toJSON(). The function should return
-         * either an object with public member variables or a array with keys
+         * Executes the first target function and generates the $next-functions.
+         * The output is then given to the output method
          * 
-         * @param mixed $ret The result that should be displayed or a Response-Object with custom information
+         * @param mixed $request The response-array, that has matched
          * @return void
          */
-        private function resolve($route, $request){
-            header('Content-Type: application/json');
-
-            $allowedMethods = [];
-
-            foreach($this->routes as $route){
-                $method = $route->getMethod();
-                if(!in_array($method, $allowedMethods)){
-                    $allowedMethods[] = $route->getMethod();
-                }
-            }
-
-            header("Access-Control-Allow-Methods: " . implode(', ', $allowedMethods));
-
-            if($this->cors_enabled){
-                header("Access-Control-Allow-Origin: *");
-            }
-
-            foreach($this->headers as $key => $header){
-                header("$key: $header");
-            }
-
-            $targets = $route->getTargets();
+        private function resolve($request){
+            $targets = $request['route']->getTargets();
 
             $next = null;
             
@@ -352,6 +329,37 @@
 
             $ret = $targets[0]($request, $next);
             
+            $this->output($ret);
+        }
+
+        /**
+         * Sets the http-headers and outputs the value of $ret.
+         * If $ret is a object, it is tried to execute the toJSON-function
+         * 
+         * @param mixed $ret The value to output
+         */
+        public function output($ret){
+            header('Content-Type: application/json');
+
+            $allowedMethods = [];
+
+            foreach($this->routes as $route){
+                $method = $route->getMethod();
+                if(!in_array($method, $allowedMethods)){
+                    $allowedMethods[] = $route->getMethod();
+                }
+            }
+
+            header("Access-Control-Allow-Methods: " . implode(', ', $allowedMethods));
+
+            if($this->cors_enabled){
+                header("Access-Control-Allow-Origin: *");
+            }
+
+            foreach($this->headers as $key => $header){
+                header("$key: $header");
+            }
+
             $value = null;
             $code = 200;
 
