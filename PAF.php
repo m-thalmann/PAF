@@ -256,8 +256,8 @@
                                     $requestSegment = $requestSegments[$i];
                                     $pathSegment = $pathSegments[$i];
 
-                                    if(substr($pathSegment, 0, 1) == '[' && substr($pathSegment, count($pathSegment) -2) == ']'){
-                                        list($paramType, $paramName) = explode(':', substr($pathSegment, 1, count($pathSegment) -2));
+                                    if(substr($pathSegment, 0, 1) == '[' && substr($pathSegment, strlen($pathSegment) -1) == ']'){
+                                        list($paramType, $paramName) = explode(':', substr($pathSegment, 1, strlen($pathSegment) -2));
 
                                         $convertedParam = PAF::convertParam($paramType, $requestSegment);
 
