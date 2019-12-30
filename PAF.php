@@ -34,6 +34,11 @@
         private $headers = [];
 
         /**
+         * @var bool Boolean whitch defines if the query parameters in the path are ignored
+         */
+        private $ignore_query = false;
+
+        /**
          * Creates PAF-Router
          * 
          * @param string $basePath
@@ -153,6 +158,25 @@
         }
 
         /**
+         * Sets if the query string is ignored
+         * 
+         * @param bool $ignored
+         * @return void
+         */
+        public function setIgnoreQuery($ignored){
+            $this->ignore_query = !!$ignored;
+        }
+
+        /**
+         * Returns if the query string is ignored
+         * 
+         * @return bool
+         */
+        public function getIgnoreQuery(){
+            return $this->ignore_query;
+        }
+
+        /**
          * Returns all routes that will be matched by this instance
          * 
          * @return array All routes
@@ -207,11 +231,22 @@
          */
         public function execute() {
             $requestUrl = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/';
-			
+
+            if($this->getIgnoreQuery()){
+                $requestUrl = explode('?', $requestUrl)[0];
+            }
+
             if(substr($requestUrl, 0, strlen($this->basePath)) == $this->basePath){
                 $requestUrl = substr($requestUrl, strlen($this->basePath));
 
                 $requestMethod = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
+
+                if($this->cors_enabled){
+                    if($requestMethod == 'OPTIONS'){
+                        $this->output(null);
+                        return true;
+                    }
+                }
 
                 $request = [
                     'route' => null,

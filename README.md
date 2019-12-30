@@ -154,6 +154,18 @@ $router->setHeader("Access-Control-Allow-Headers", "X-Custom-Header");
 echo $router->getHeader("Access-Control-Allow-Headers");
 ```
 
+#### set/getIgnoreQuery
+Sets/returns if the query string (e.g. ?page=1) is ignored.<br>
+Used for example, if you are using the query string for paging, and dont want it to interfere with the route(s)
+
+*Default:* `false`
+
+```php
+$router->setIgnoreQuery(true);
+
+echo $router->getIgnoreQuery(); // returns true in this case
+```
+
 #### getRoutes
 Returns all routes, that should be matched for this instance
 
