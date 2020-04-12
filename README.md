@@ -357,13 +357,14 @@ If it is a `Response`-Object, its value-property will be used and the http-respo
 ### Response
 This object can be returned by the target-function of a matched route
 ```php
-$response = new Response(VALUE, CODE);
+$response = new Response(VALUE, CODE, CONTENT_TYPE);
 ```
 
 - `VALUE` is the return value, that should be displayed
-- `CODE` is the http-response-code for the request (see https://httpstatuses.com/)
+- `CODE` is the http-response-code for the request (see https://httpstatuses.com/) (default: 200)
+- `CONTENT_TYPE` is the content-type for the request (default: 'application/json')
 
-These two properties are public member variables, so they can be changed very easily.
+These three properties are public member variables, so they can be changed very easily.
 
 There are also some methods to set the code:
 - `ok()` -> 200
@@ -400,28 +401,30 @@ $router->map('*', '*', function(){
 ## Examples
 ### Authorization
 ```php
-$auth = function($request){
-    $ret = false;
+$auth = function($request, $next = null){
+    $response = (new Response())->unauthorized();
 
-    if(!empty($request['authorization'])){
-        // Check if token is correct
-        [...]
-
-        if($is_correct){
-            $ret = true;
-        }
+    if($request['authorization'] === null){
+        return $response;
     }
 
-    return $ret;
+    // Check if token is correct
+    [...]
+
+    if(!$token_correct){
+        return $response;
+    }
+
+    if($next !== NULL){
+        return $next($request);
+    }else{
+        return new Response([
+            "info" => "Authorized"
+        ]);
+    }
 };
 
-$router->map('GET', '/load', function($request, $next){
-    if($next($request)){
-        // Get user
-        return $user;
-    }else{
-        $response = new Response(null);
-        return $response->unauthorized();
-    }
-}, $auth);
+$router->map('GET', '/load', $auth, function($req){
+    return 'User authorized';
+});
 ```

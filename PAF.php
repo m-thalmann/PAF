@@ -347,15 +347,13 @@
             if(count($targets) > 1){
                 $last_target = 0;
 
-                $next = function($data) use ($targets, $last_target, $next){
+                $next = function($data) use ($targets, &$last_target, &$next){
                     $_next = null;
 
                     $last_target++;
 
                     if(count($targets) - $last_target > 1){
-                        $_next = function($data) use ($next){
-                            $next($data);
-                        };
+                        $_next = $next;
                     }
 
                     return $targets[$last_target]($data, $_next);
@@ -374,7 +372,13 @@
          * @param mixed $ret The value to output
          */
         public function output($ret){
-            header('Content-Type: application/json');
+            $contentType = 'application/json';
+
+            if($ret instanceof Response){
+                $contentType = $ret->contentType;
+            }
+
+            header('Content-Type: ' . $contentType);
 
             $allowedMethods = [];
 
@@ -409,11 +413,14 @@
                 $value = $ret;
             }
 
-            $value = PAF::convertResponse($value);
-
             http_response_code($code);
 
-            echo json_encode($value);
+            if($contentType == 'application/json'){
+                $value = PAF::convertResponse($value);
+                echo json_encode($value);
+            }else{
+                echo $value;
+            }
         }
 
         /**
@@ -434,6 +441,10 @@
             }else if($type == 'i'){
                 if(ctype_digit($value)){
                     return intval($value);
+                }else if($value[0] == '-'){
+                    if(ctype_digit(substr($value, 1))){
+                        return intval($value);
+                    }
                 }
             }else if($type == 'n'){
                 if(is_numeric($value)){
@@ -646,14 +657,21 @@
         public $code = 200;
 
         /**
+         * @var string the content-type of the response
+         */
+        public $contentType = 'application/json';
+
+        /**
          * Creates Response
          * 
          * @param mixed $value
          * @param int $code
+         * @param string $contentType
          */
-        public function __construct($value = null, $code = 200) {
+        public function __construct($value = null, $code = 200, $contentType = 'application/json') {
             $this->value = $value;
             $this->code = $code;
+            $this->contentType = $contentType;
         }
 
         /**
