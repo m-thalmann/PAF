@@ -1,334 +1,272 @@
 # PAF
-PAF (PHP API Framework) is a Framework to create simple API's through PHP and outputting them as JSON.<br>
+PAF (PHP API Framework) is a framework for creating API's through PHP and outputting them as JSON (also other formats are possible).<br>
 It was inspired by [AltoRouter](https://github.com/dannyvankooten/AltoRouter) and [ExpressJS](https://expressjs.com/)
 
 ## Table of contents
 - [Setting up](#setting-up)
-- [Example](#example)
-- [Instanciation](#instanciation)
-    - [Methods](#methods)
-- [Creating routes](#creating-routes)
-    - [Route](#route)
-    - [Request](#request)
-- [Handling return values](#handling-return-values)
-    - [Response](#response)
-- [Catch unmapped routes](#catch-unmapped-routes)
+- [Quick start](#quick-start)
+- [Initialization](#initialization)
+    - [Headers](#headers)
+    - [Ignore Query](#ignore-query)
+- [Adding routes](#adding-routes)
+    - [Path](#path)
+    - [Targets](#targets)
+        - [Request](#request)
+- [Groups](#groups)
+    - [Lazy groups](#lazy-groups)
+- [Response](#response)
+- [Output](#output)
 - [Examples](#examples)
-    - [Authorization](#authorization)
+
+<hr>
 
 ## Setting up
-1. Download the `PAF.php` file, that includes the needed classes.
-2. Import the file into your `index.php` file:
+1. Download the repository and extract the files into a folder (for example: `./lib/PAF`).
+2. Import the `PAF.php` file into your `index.php` file:
     ```php
     require_once 'path/to/PAF.php';
     ```
-3. If you are using a Apache Webserver, you have to route all requests, that can not be found on the server, to your `index.php` file with a `.htaccess` file. Either use the one provided in this repository or add the following lines to your own:
+3. If you are using a Apache webserver, you have to route all requests, that can not be found on the server, to your `index.php` file with a `.htaccess` file. Either use the one provided in this repository or add the following lines to your own:
     ```apacheconf
     RewriteEngine on
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule . index.php [L]
     ```
+    The same is also possible if you are using a different webserver, but in different ways.
 4. Now you are ready to go
 
-## Example
+<hr>
+
+## Quick start
+`index.php`:
 ```php
 <?php
-    require_once 'path/to/PAF.php';
+    require_once('path/to/PAF.php');
 
-    $router = new PAF('/api');
+    Router::init('/api'); // initialize the router
 
-    $router->setCorsEnabled(true);
+    // add routes to '/api' (base path)
+    Router::addRoutes()
+        ->get('/', function($req){
+            return [
+                "info" => "PAF test-api Version 1.0"
+            ];
+        });
 
-    $router->map('GET', '/', function($request){
-        return [
-            "info" => "PAF test-api Version 1.0"
-        ];
-    });
+    // add routes to '/api/users' (base path + group path)
+    Router::group('/users')
+        ->get('/', function($req){
+            // load users from DB
 
-    $router->map('GET', '/user/[i:id]', function($request){
-        $user_id = $request['params']['id']; // integer
+            if($error !== NULL){
+                return Response::error($error); // 500
+            }else{
+                return Response::ok($users);    // 200
+            }
+        })
+        ->get('/{{i:id}}', function($req){
+            $id = $req['params']['id']; // converted to int
 
-        [...] // get user from DB
+            // load user from DB
 
-        $response = new Response();
+            if($error !== NULL){
+                return Response::error($error); // 500
+            }else{
+                return Response::ok($user);     // 200
+            }
+        });
 
-        if($error){
-            $response->error();
-            $response->value = -1;
-        }else{
-            $response->value = $user;
-        }
-
-        return $response;
-    });
-
-    $router->execute();
+    Router::execute(); // start the path and request-method matching
+                       // returns a boolean, whether a route was found or not
 ?>
 ```
 
-This example contains two routes: `GET /` and `GET /user/id`.
+This example contains three routes: `GET /api`, `GET /api/users` and `GET /api/users/{id}`.
 
-By requesting `GET /` the following JSON-Object will be returned:
-```json
-{
-    "info": "PAF test-api Version 1.0"
-}
-```
+- By requesting `GET /api` the following JSON-Object will be returned:
+    ```json
+    {
+        "info": "PAF test-api Version 1.0"
+    }
+    ```
+- Similar for `GET /api/users`
 
-By requesting `GET /user/<id>` with `id` beeing a integer, either a JSON-Object beeing the user-object or a error code (-1) will be returned and the http-response-code will be set to 500 (see [Response](#response))
+- By requesting `GET /api/users/{id}` with `id` beeing a integer, a JSON-object, beeing either a user-object or a error-object, is returned. The http-response-code is set to either 200 (ok) or 500 (error) (see [Response](#response)).
 
-## Instanciation
-To create a new PAF-Object write the following line:
+<hr>
+
+## Initialization
+The router has to be initialized before using it:
 ```php
-$router = new PAF();
+Router::init(string $basePath, boolean $corsEnabled);
 ```
-The constructor has two optional parameters:
+
+The `$basePath` is the prefix of every route.
+
+If you set `$corsEnabled` to true, the appropriate headers are set, so cors-requests are possible (default: false).
+
+**Tipp:** If you want cors to work and you pass a authorization-header or a content-type header, you have to add a `Access-Control-Allow-Headers` header with the wanted headers as value (separated by ',').<br>
+Example: `Access-Control-Allow-Headers: Content-Type, Authorization`.<br>
+For that use the `Router::setHeader(string  $name, string  $value)` function.
+
+### Headers
+You can set http-headers, that will be set, when the router matches and executes a route:
 ```php
-$router = new PAF($basePath, $headers);
+Router::setHeader(string $name, string $value);
+
+Router::setHeaders(array $headers); // map, with key as name of the header and value as value
 ```
-`$basePath` is the path from where on the route will be matched<br>
-`$headers` is an array with http-headers with the key beeing the name of it and the value beeing the header-value
+If you want to delete a header, set its value to `NULL`.
+
+### Ignore Query
+You can set whether the query-part of the url should also be taken into account, when matching the path.<br>
+**Default is true!**
+```php
+Router::setIgnoreQuery(boolean $ignoreQuery);
+```
+
+Example:
+
+`$ignoreQuery = TRUE`:<br>
+Route `/users` matches with `/users?limit=1&offset=3`
+
+`$ignoreQuery = FALSE`:<br>
+Route `/users` *does not* match with `/users?limit=1&offset=3`
+
+<hr>
+
+## Adding routes
+If you want to add routes to the base path you have to call the `Router::addRoutes()` function and then call the functions for adding routes.<br>
+There are several methods for adding routes:
+```php
+all($path, ...$targets) // any method
+
+get($path, ...$targets)
+post($path, ...$targets)
+put($path, ...$targets)
+delete($path, ...$targets)
+
+map($method, $path, ...$targets) // method: any http-request-method (in caps) or '*' for any
+```
 
 Example:
 ```php
-$router = new PAF('/api', [
-    "Access-Control-Allow-Headers" => "X-Custom-Header"
-]);
+Router::addRoutes()
+    ->get('/', function($req){
+        // ...
+        return $response;
+    })
+    ->delete('/', function($req){
+        // ...
+        return NULL;
+    })
+    ->map('PATCH', '/' function($req){
+        // ...
+        return NULL;
+    });
 ```
 
-### Methods
-The PAF-Object has several methods:
+These functions can be chained, so you can add multiple routes to a group or the base path (fluent api).
 
-#### set/getCorsEnabled
-Sets/returns if CORS should be enabled for this instance
+### Path
+The **path** of a route can contain regex, but no groups, since they would lead to unwanted behaviour. Therefore please ommit the `(` and `)` characters!
 
-*Default:* `false`
-
+The **path** can also contain parameters:
 ```php
-$router->setCorsEnabled(true);
-
-echo $router->getCorsEnabled(); // returns true in this case
+Router::addRoutes()->get('/user/{{i:id}}', function($req){
+    $id = $req['params']['id'];
+});
 ```
+The syntax for a parameter is the following: `{{<type>:<name>}}`
 
-#### set/getBasePath
-Sets/returns the base-path of the instance. The base-path is the path from where on the route should be matched.
+The type can be:
+- ` ` (*empty*), `s` or `*` for a string
+- `i` for a integer
+- `n` for any number (also with decimal; for example: `12.2`)
 
-For example: `https://example.com/api/load` and `basePath` is set to `/api` then it will match only `/load`
+\[ ! \] The route only matches if the type of the parameter matches with the given parameter.<br>
 
-*Default:* `''`
+The parameters get stored inside of the `$request['params']` map, with their name as the key. The values are converted to the according types (see [Targets](#targets)).
 
+### Targets
+When adding routes, you have to define (at least) one function, that is executed once this route is matched. You can also define multiple target-functions, but only the first one is executed directly by the router (the others have to be called within the target-function(s)).
 ```php
-$router->setBasePath('/api');
-
-echo $router->getBasePath();
-```
-
-#### set/getHeaders
-Sets/returns the custom headers for this router in a array:
-
-```php
-[
-    "Access-Control-Allow-Headers" => "X-Custom-Header",
-    ...
-]
-```
-
-*Default:* `[]`
-
-```php
-$router->setHeaders([
-    "Access-Control-Allow-Headers" => "X-Custom-Header"
-]);
-
-echo $router->getHeaders();
-```
-
-#### set/getHeader
-Sets/returns the custom header with the specified key for this router
-
-_TIPP:_ By setting the value of the header to `null` it will be removed
-
-```php
-$router->setHeader("Access-Control-Allow-Headers", "X-Custom-Header");
-
-echo $router->getHeader("Access-Control-Allow-Headers");
-```
-
-#### set/getIgnoreQuery
-Sets/returns if the query string (e.g. ?page=1) is ignored.<br>
-Used for example, if you are using the query string for paging, and dont want it to interfere with the route(s)
-
-*Default:* `false`
-
-```php
-$router->setIgnoreQuery(true);
-
-echo $router->getIgnoreQuery(); // returns true in this case
-```
-
-#### getRoutes
-Returns all routes, that should be matched for this instance
-
-*Default:* `[]`
-
-```php
-print_r($router->getRoutes());
-```
-
-#### map
-Adds a new route to the instance
-
-`map(METHOD, PATH, TARGET1, TARGET2, ...)`
-
-- `METHOD` is the http-method in caps, or a wildcard-character (`*`) for any method
-- `PATH` is the path that should be matched (see [Path](#path))
-- `TARGET1, TARGET2, ...` are the function that are executed when this route is matched, where `TARGET1` is executed directly and only its output is used (see [Targets](#targets)).
-
-```php
-$router->map('GET', '/', function($request){
-    return 'Success';
+get('/users', function($req, $next){
+    return $next($req['path']); // call the next target function with a parameter (max. 1 parameter)
+}, function($data, $next){
+    return $next($data);        // -"-
+}, function($data)){
+    return substr($data, 0, 2);
 });
 ```
 
-#### addRoute
-Does the same as `$router->map(...)`, but uses a Route-object instead (see [Route](#route))
+Only the return value of the first target-function is used for the output of the api, so make sure you return the correct value.
 
-```php
-$route = new Route('GET', '/', function($request){
-    return 'Success';
-});
+Every target function receives two parameters: The data passed from the previous target function and the next target function (= null, if there is no more target function).
 
-$router->addRoute($route);
-```
-
-#### execute
-Has to be called, always when the router should do its job (after all routes have been declared). This method matches the route against all routes-path and chooses the first match. Then returns `true`, if a match has been found, otherwise `false`
-
-Before the call to this function, no output to the document is allowed (for example with `echo`), otherwise there will be errors (because of setting headers)
-
-```php
-echo $router->execute();
-```
-
-#### exec
-Is a alias for `execute`
-
-## Creating routes
-Routes can be created with either of the two following methods:
-```php
-$router->map(METHOD, PATH, TARGET1, ...);
-```
-```php
-$route = new Route(METHOD, PATH, [TARGET1, TARGET2, ...]);
-$router->addRoute($route);
-```
-
-### Route
-This class defines a route:
-```php
-$route = new Route(METHOD, PATH, [TARGET1, TARGET2, ...]);
-```
-
-- `METHOD` is the http-method in caps, or a wildcard-character (`*`) for any method
-- `PATH` is the path that should be matched (see [Path](#path))
-- `TARGET1, TARGET2, ...` are the function that are executed when this route is matched, where `TARGET1` is executed directly and only its output is used (see [Targets](#targets)).
-
-#### Path
-Path is a string. There are three types of paths:
-1. *static:* `/users`
-2. *dynamic:* `/users/[i:id]`
-3. *wildcard:* `*`
-
-*Dynamic* paths contain at least one parameter. Parameters are defined as following:
-`[type:name]`<br>
-Type can be:
-- `'*'`, `''` for *any type*
-- `'s'` for a *string*
-- `'i'` for a *integer*
-- `'n'` for a *number*
-
-The parameters will be contained in the request-array of the matched-routes target-function (see [Request](#request))
-
-#### Targets
-The targets are the functions that contain the logic of the route. The first target-function is executed directly by the PAF-Instance.
-It recieves 2 arguments: The request-array (see [Request](#request)) and a _next-function_. The next ones will recieve a data-argument, that is the one passed to the _next-function_ and a new _next-function_.
-
-The _next-function_ is null, if there is no next target function, otherwise it can be called and returns the return-value of the next target function and so on.
-Only the output from the first target-function will be displayed.
-
-```php
-$router->map('GET', '/load/[i:id]', function($request, $next){
-    $ret = $next($request['params']['id']);
-
-    if($ret == null){
-        return new Response(null, 404); // not found
-    }else{
-        return $ret;
-    }
-}, function($id){
-    // Search in DB
-    [ ... ]
-
-    return $user;
-});
-```
-
-### Request
-This array will be passed on to the matched-routes target-function as a parameter.
-
-```php
-[...]
-
-$router->map('GET', '/', function($request){
-    [...]
-    return null;
-});
-```
-
-It contains the following items:
+#### Request
+The first target function receives a **request-array** as the first parameter:
 ```php
 [
-    'route' => Route Object, // Object of the matched route
-    'method' => string, // The request-method (same as in Route Object)
-    'url' => string, // The full url for this request
-    'path' => string, // The matched path (same as in Route Object)
-    'authorization' => string | null, // The http-authorization-header
-    'params' => [], // The parameters for the request
-    'post' => Object | null, // The post-payload
+    'route' => Route,       // matched route object
+    'method' => string,     // http-request-method
+    'url' => string,        // full request url
+    'path' => string,       // matched path of the route  
+    'authorization' => string|null // contains the content of the authorization header if it is set
+    'params' => map,        // map containing all parameters of the path (converted to datatype)
+    'post' => mixed|null,   // posted data, if data was posted
 ]
 ```
 
-The params array contains all parameters of this route with their name as the key:
+<hr>
+
+## Groups
+Groups are used to group routes, that have same prefix, together. A group can contain routes and other groups.
+
+Adding groups to the base path:
 ```php
-[
-    [...],
-    'params' => [
-        'id' => 10
-    ]
-]
+Router::group('/user') // access the group object here (add routes, ...) (fluent api)
 ```
 
-If the method is either `POST` or `PUT`, the request-array also contains the contents of the payload:
+Adding groups to a group:
 ```php
-[
-    [...],
-    'post' => <JSON_OBJECT>
-]
+Router::group('/users')->group('/home') // ...
 ```
 
-If the http-authorization-header is not undefined, the request-array also contains the content of the authorization header:
+### Lazy groups
+A lazy group loads the groups and routes contained by this group only when the group is matched. This improves the performance, since no files, that aren't needed, are loaded.
+
+To do this you have to pass a path (preferably absolute) to the group. Don't add any routes and groups here; do that inside of the file, the path points to:
+
+`index.php`:
 ```php
-[
-    [...],
-    'authorization' => 'Bearer 202cb962ac59075b964b07152d234b70'
-]
+Router::group('/users', __DIR__ . '/groups/users.php');
+```
+`groups/users.php`:
+```php
+$group->get('/', function(){
+        // ...
+        return $response;
+    })
+    ->post('/', function($req){
+        // ...
+        return $response;
+    });
 ```
 
-## Handling return values
-The target-function of the matched route has to return a value, that is displayed. It can be either a `Response`-Object or anything else.
+If you want to change the name of the variable (`$group`) you can do that by passing the name for it to the group function:
+```php
+Router::group('/users', __DIR__ . '/groups/users.php', 'myGroupVariable'); // access via $myGroupVariable
+```
 
-If it is an object (other than `Response`) and has a function called
-`toJSON()`, it will be executed and the output of that function will be used, otherwise the returned value will be encoded to JSON with `json_encode(...)`.
+<hr>
+
+## Response
+The response of the first target function is used as the output of the api. If you just return a value, it will be converted to JSON and then output. The http-response-code will be 200.
+
+When converting the response to JSON, the value is an object (other than `Response`) and has a function called
+`toJSON()`, it (the `toJSON()`-function) will be executed and the output of that function will be used, otherwise the value will be used as is. Then the value will be encoded to JSON with `json_encode(...)`.<br>
+If the value is an array (also within any object), the same is done for every element.
 
 ```php
 [...]
@@ -352,79 +290,50 @@ $router->map('GET', '/user', function(){
 });
 ```
 
-If it is a `Response`-Object, its value-property will be used and the http-response-code will be set to its code-property (see [Response](#response)).
-
-### Response
-This object can be returned by the target-function of a matched route
+If you want to change the http-response-code or/and the content-type of the response, you have to use the `Response`-object:
 ```php
-$response = new Response(VALUE, CODE, CONTENT_TYPE);
+$response = new Response(mixed $value, integer $httpCode, string $contentType);
+```
+When changing the content-type of a response to anything different than `application/json`, the value will *not* be converted to JSON (obviously).
+
+You can also easily create response objects with the correct http-response-code by using the static creation functions:
+```php
+Response::ok($value, $contentType);               // Code: 200
+Response::created($value, $contentType);          // Code: 201
+Response::noContent($value, $contentType);        // Code: 204
+
+Response::badRequest($value, $contentType);       // Code: 400
+Response::unauthorized($value, $contentType);     // Code: 401
+Response::forbidden($value, $contentType);        // Code: 403
+Response::notFound($value, $contentType);         // Code: 404
+Response::methodNotAllowed($value, $contentType); // Code: 405
+Response::conflict($value, $contentType);         // Code: 409
+Response::tooManyRequests($value, $contentType);  // Code: 429
+
+Response::error($value, $contentType);            // Code: 500
+Response::notImplemented($value, $contentType);   // Code: 501
 ```
 
-- `VALUE` is the return value, that should be displayed
-- `CODE` is the http-response-code for the request (see https://httpstatuses.com/) (default: 200)
-- `CONTENT_TYPE` is the content-type for the request (default: 'application/json')
-
-These three properties are public member variables, so they can be changed very easily.
-
-There are also some methods to set the code:
-- `ok()` -> 200
-- `created()` -> 201
-- `badRequest()` -> 400
-- `unauthorized()` -> 401
-- `forbidden()` -> 403
-- `notFound()` -> 404
-- `methodNotAllowed()` -> 405
-- `conflict()` -> 409
-- `error()` -> 500
-- `notImplemented()` -> 501
-
+Like this you can simply return the created response:
 ```php
-[...]
-
-$router->map('GET', '/user', function(){
-    return new Response(null, 500);
+$group->get('/users/{{i:id}}/image', function(){
+    // ...
+    
+    if($notFound){
+        return Response::notFound('User was not found'); // default content-type: 'application/json'
+    }else{
+        return Response::ok($userImage, 'image/jpeg');
+    }
 });
 ```
 
-## Catch unmapped routes
-By setting the http-method and the path to `*`, every route will be matched. Only add this as the last route, to catch unmapped routes!
+<hr>
 
-```php
-[...]
+## Output
+If you want to output something, without the router outputting anything (for example if Router::execute() returns `FALSE`, which means there was no route matched), you can use the `Router::output($value);` function.<br>
+This function is normally used by the router to output the return value of the matched route, and therefore behaves exactly like described before.
 
-$router->map('*', '*', function(){
-    $response = new Response(null);
-    return $response->badRequest();
-});
-```
+<hr>
 
 ## Examples
-### Authorization
-```php
-$auth = function($request, $next = null){
-    $response = (new Response())->unauthorized();
-
-    if($request['authorization'] === null){
-        return $response;
-    }
-
-    // Check if token is correct
-    [...]
-
-    if(!$token_correct){
-        return $response;
-    }
-
-    if($next !== NULL){
-        return $next($request);
-    }else{
-        return new Response([
-            "info" => "Authorized"
-        ]);
-    }
-};
-
-$router->map('GET', '/load', $auth, function($req){
-    return 'User authorized';
-});
-```
+*Coming soon*
