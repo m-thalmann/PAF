@@ -2,6 +2,8 @@
 PAF (PHP API Framework) is a framework for creating API's through PHP and outputting them as JSON (also other formats are possible).<br>
 It was inspired by [AltoRouter](https://github.com/dannyvankooten/AltoRouter) and [ExpressJS](https://expressjs.com/)
 
+This file explains the main concepts and functions of PAF. If you want a more in-depth documentation, you find the phpDocumentator documentation of all classes here: https://m-thalmann.github.io/PAF
+
 ## Table of contents
 - [Setting up](#setting-up)
 - [Quick start](#quick-start)
