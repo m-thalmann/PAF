@@ -338,4 +338,7 @@ This function is normally used by the router to output the return value of the m
 <hr>
 
 ## Examples
-*Coming soon*
+Info: Make sure to copy the needed files into the example's folder (.htaccess, JWT.php, ...)
+
+- [Authorization](https://github.com/m-thalmann/PAF/tree/master/examples/Authorization)
+- [Sample API Structure](https://github.com/m-thalmann/PAF/tree/master/examples/Sample-API-Structure)
