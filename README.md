@@ -30,9 +30,14 @@ This file explains the main concepts and functions of PAF. If you want a more in
     ```
 3. If you are using a Apache webserver, you have to route all requests, that can not be found on the server, to your `index.php` file with a `.htaccess` file. Either use the one provided in this repository or add the following lines to your own:
     ```apacheconf
-    RewriteEngine on
+    RewriteEngine On
+
+    RewriteCond %{HTTP:Authorization} ^(.*)
+    RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+
+    RewriteCond %{REQUEST_FILENAME}  -f [OR]
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule . index.php [L]
+    RewriteRule ^(.*)$ index.php [L,QSA]
     ```
     The same is also possible if you are using a different webserver, but in different ways.
 4. Now you are ready to go
