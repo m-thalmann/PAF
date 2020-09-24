@@ -165,7 +165,7 @@
          *      'path' => string,       // matched path of the route  
          *      'authorization' => string|null // contains the content of the authorization header if it is set
          *      'params' => array/map,  // map containing all parameters of the path (converted to datatype)
-         *      'post' => mixed|null,   // posted data, if data was posted
+         *      'post' => mixed|null,   // posted data, if data was posted (not formdata -> use $_POST)
          *  ]
          * </pre>
          * 

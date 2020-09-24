@@ -136,10 +136,10 @@
                                 <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-718027825"></a>
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1905894469"></a>
                                 <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
             </div>
-            <div id="namespace-718027825" class="accordion-body collapse in">
+            <div id="namespace-1905894469" class="accordion-body collapse in">
                 <div class="accordion-inner">
 
                     
@@ -191,7 +191,6 @@
                                                                     <a href="../classes/Router.html#method_setHeader" class="">setHeader()</a><br />
                                                                     <a href="../classes/Router.html#method_getHeaders" class="">getHeaders()</a><br />
                                                                     <a href="../classes/Router.html#method_getHeader" class="">getHeader()</a><br />
-                                                                    <a href="../classes/Router.html#method_setCorsEnabled" class="">setCorsEnabled()</a><br />
                                                                     <a href="../classes/Router.html#method_getCorsEnabled" class="">getCorsEnabled()</a><br />
                                                                     <a href="../classes/Router.html#method_setIgnoreQuery" class="">setIgnoreQuery()</a><br />
                                                                     <a href="../classes/Router.html#method_getIgnoreQuery" class="">getIgnoreQuery()</a><br />
@@ -222,6 +221,7 @@
                             <section class="span4">
                                                                     <a href="../classes/Router.html#method___construct" class="">__construct()</a><br />
                                                                     <a href="../classes/Router.html#method_setBasePath" class="">setBasePath()</a><br />
+                                                                    <a href="../classes/Router.html#method_setCorsEnabled" class="">setCorsEnabled()</a><br />
                                                                     <a href="../classes/Router.html#method_convertResponse" class="">convertResponse()</a><br />
                                                             </section>
                             <section class="span4">
@@ -450,7 +450,12 @@
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
                 <pre class="signature" style="margin-right: 54px;">init(string  <span class="argument">$basePath = &#039;&#039;</span>, boolean  <span class="argument">$corsEnabled = FALSE</span>) </pre>
                 <p><em>Initializes the router by creating the root-group and setting if cors should be enabled.</em></p>
-                <p>A initialization is necessary and can only happen once.</p>
+                <p>Sets the cors-headers (if enabled) and all previousely set headers.</p>
+<p><b>Tipp:</b>
+If you want cors to work and you pass a authorization-header or a content-type header,
+you have to add a 'Access-Control-Allow-Headers' header with the wanted headers as value
+(separated by ',')</p>
+<p>A initialization is necessary and can only happen once.</p>
 
                                     <h4>Parameters</h4>
                     <table class="table table-condensed table-hover">
@@ -521,6 +526,7 @@
                 <pre class="signature" style="margin-right: 54px;">setHeaders(array  <span class="argument">$headers</span>) </pre>
                 <p><em>Adds/replaces all headers from the parameter (map) to the custom headers to be set</em></p>
                 <p>To delete a header set the value to NULL</p>
+<p>Important: All headers must be set before calling Router::init()</p>
 
                                     <h4>Parameters</h4>
                     <table class="table table-condensed table-hover">
@@ -556,6 +562,7 @@
                 <pre class="signature" style="margin-right: 54px;">setHeader(string  <span class="argument">$name</span>, string  <span class="argument">$value</span>) </pre>
                 <p><em>Adds/replaces the header to the custom headers with the value</em></p>
                 <p>To delete a header set the value to NULL</p>
+<p>Important: All headers must be set before calling Router::init()</p>
 
                                     <h4>Parameters</h4>
                     <table class="table table-condensed table-hover">
@@ -648,46 +655,6 @@
                             <span class="label label-info">static</span>
                                                             <dl>
                                                                             </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr><td colspan="2"><em>None found</em></td></tr>
-                            </table>
-        </aside>
-    </div>
-
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="method_setCorsEnabled" name="method_setCorsEnabled" class="anchor"></a>
-            <article class="method">
-                <h3 class="public ">setCorsEnabled()</h3>
-                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">setCorsEnabled(boolean  <span class="argument">$enabled</span>) </pre>
-                <p><em>Sets whether cors should be enabled</em></p>
-                <p><b>Tipp:</b>
-If you want cors to work and you pass a authorization-header or a content-type header,
-you have to add a 'Access-Control-Allow-Headers' header with the wanted headers as value
-(separated by ',')</p>
-
-                                    <h4>Parameters</h4>
-                    <table class="table table-condensed table-hover">
-                                                    <tr>
-                                <td>boolean</td>
-                                <td>$enabled </td>
-                                <td><p>If cors should be enabled or not</p></td>
-                            </tr>
-                                            </table>
-                
-                
-                				
-                            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                            <span class="label label-info">static</span>
-                                                            <dl>
-                                                                                            <dt>See also</dt>
-                                                                <dd><a href="../classes/Router.html#property_corsEnabled"><span class="namespace-wrapper">\Router::corsEnabled</span></a></dd>
-                                                                </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
                                     <tr><td colspan="2"><em>None found</em></td></tr>
@@ -1007,6 +974,46 @@ sets the http-response-code and outputs the (converted) parameter value</em></p>
 
                                     <div class="row-fluid">
         <div class="span8 content class">
+            <a id="method_setCorsEnabled" name="method_setCorsEnabled" class="anchor"></a>
+            <article class="method">
+                <h3 class="private ">setCorsEnabled()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">setCorsEnabled(boolean  <span class="argument">$enabled</span>) </pre>
+                <p><em>Sets whether cors should be enabled</em></p>
+                <p><b>Tipp:</b>
+If you want cors to work and you pass a authorization-header or a content-type header,
+you have to add a 'Access-Control-Allow-Headers' header with the wanted headers as value
+(separated by ',')</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>boolean</td>
+                                <td>$enabled </td>
+                                <td><p>If cors should be enabled or not</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                            <span class="label label-info">static</span>
+                                                            <dl>
+                                                                                            <dt>See also</dt>
+                                                                <dd><a href="../classes/Router.html#property_corsEnabled"><span class="namespace-wrapper">\Router::corsEnabled</span></a></dd>
+                                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
             <a id="method_convertResponse" name="method_convertResponse" class="anchor"></a>
             <article class="method">
                 <h3 class="private ">convertResponse()</h3>
@@ -1016,6 +1023,7 @@ sets the http-response-code and outputs the (converted) parameter value</em></p>
                 <p>This happenes by calling the toJSON() function of the object (if it is an object
 and it has that function). If the value is a array the function is called for
 every element recursively.</p>
+<p>WARN: The usage of toJSON() is deprecated. Implement the JsonSerializable interface!</p>
 
                                     <h4>Parameters</h4>
                     <table class="table table-condensed table-hover">
@@ -1094,7 +1102,7 @@ every element recursively.</p>
                 <section class="span10 offset1">
                     <hr />
                     Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on August 8th, 2020 at 15:56.
+                    on September 24th, 2020 at 17:55.
                 </section>
             </section>
         </section>

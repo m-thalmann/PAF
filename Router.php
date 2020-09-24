@@ -46,6 +46,12 @@
 
         /**
          * Initializes the router by creating the root-group and setting if cors should be enabled.
+         * Sets the cors-headers (if enabled) and all previousely set headers.
+         * 
+         * <b>Tipp:</b>
+         * If you want cors to work and you pass a authorization-header or a content-type header,
+         * you have to add a 'Access-Control-Allow-Headers' header with the wanted headers as value
+         * (separated by ',')
          * 
          * A initialization is necessary and can only happen once.
          * 
@@ -58,12 +64,28 @@
                 throw new Exception('Router already initialized');
             }
 
+            if(!is_bool($corsEnabled)){
+                throw new InvalidArgumentException('corsEnabled must be bool');
+            }
+
             if($basePath === '/') $basePath = '';
 
             self::setBasePath($basePath);
             self::setCorsEnabled($corsEnabled);
 
             self::$group = new RouterGroup($basePath);
+
+            if($corsEnabled && !isset(self::$headers['Access-Control-Allow-Origin'])){
+                @header("Access-Control-Allow-Origin: *");
+            }
+
+            if($corsEnabled && !isset(self::$headers['Access-Control-Allow-Methods'])){
+                @header("Access-Control-Allow-Methods: *");
+            }
+
+            foreach(self::$headers as $key => $header){
+                @header("$key: $header");
+            }
 
             self::$inited = TRUE;
         }
@@ -95,6 +117,8 @@
          * 
          * To delete a header set the value to NULL
          * 
+         * Important: All headers must be set before calling Router::init()
+         * 
          * @param array $headers The headers to be set, with the header-name as key and the value as value
          */
         public static function setHeaders($headers){
@@ -112,12 +136,15 @@
          * 
          * To delete a header set the value to NULL
          * 
+         * Important: All headers must be set before calling Router::init()
+         * 
          * @param string $name The name of the header
          * @param string $value The value of the header
          */
         public static function setHeader($name, $value){
             if(is_string($name) && $value === NULL){
                 unset(self::$headers[$name]);
+                return;
             }
             if(!is_string($name) || !is_string($value)){
                 throw new InvalidArgumentException('Name and value must be string');
@@ -166,7 +193,7 @@
          * @param bool $enabled If cors should be enabled or not
          * @see Router::$corsEnabled
          */
-        public static function setCorsEnabled($enabled){
+        private static function setCorsEnabled($enabled){
             self::$corsEnabled = !!$enabled;
         }
 
@@ -256,6 +283,8 @@
                 $requestUrl = explode('?', $requestUrl)[0];
             }
 
+            $requestMethod = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
+
             if(substr($requestUrl, 0, strlen(self::$basePath)) === self::$basePath){
                 if(self::$corsEnabled){
                     if($requestMethod == 'OPTIONS'){
@@ -265,7 +294,6 @@
                 }
 
                 $requestUrl = substr($requestUrl, strlen(self::$basePath));
-                $requestMethod = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
 
                 $route = self::$group->resolve($requestMethod, $requestUrl);
 
@@ -309,19 +337,7 @@
                 $contentType = $ret->contentType;
             }
 
-            header('Content-Type: ' . $contentType);
-
-            if(self::$corsEnabled && !isset(self::$headers['Access-Control-Allow-Origin'])){
-                header("Access-Control-Allow-Origin: *");
-            }
-
-            if(self::$corsEnabled && !isset(self::$headers['Access-Control-Allow-Methods'])){
-                header("Access-Control-Allow-Methods: *");
-            }
-
-            foreach(self::$headers as $key => $header){
-                header("$key: $header");
-            }
+            @header("Content-Type: $contentType");
 
             $value = NULL;
             $code = 200;
@@ -337,7 +353,7 @@
                 $value = $ret;
             }
 
-            http_response_code($code);
+            @http_response_code($code);
 
             if($contentType == 'application/json'){
                 $value = self::convertResponse($value);
@@ -353,12 +369,14 @@
          * and it has that function). If the value is a array the function is called for
          * every element recursively.
          * 
+         * WARN: The usage of toJSON() is deprecated. Implement the JsonSerializable interface!
+         * 
          * @param mixed $value The value that should be converted
          * @return mixed The converted value response
          */
         private static function convertResponse($value){
             if(is_object($value)){
-                if(method_exists($value, 'toJSON')){
+                if(method_exists($value, 'toJSON') && !($value instanceof JsonSerializable)){
                     $value = self::convertResponse($value->toJSON());
                 }
             }else if(is_array($value)){

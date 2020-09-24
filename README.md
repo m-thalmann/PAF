@@ -112,6 +112,8 @@ The `$basePath` is the prefix of every route.
 
 If you set `$corsEnabled` to true, the appropriate headers are set, so cors-requests are possible (default: false).
 
+**IMPORTANT:** All headers *must* be set before calling `Router::init(...)`
+
 **Tipp:** If you want cors to work and you pass a authorization-header or a content-type header, you have to add a `Access-Control-Allow-Headers` header with the wanted headers as value (separated by ',').<br>
 Example: `Access-Control-Allow-Headers: Content-Type, Authorization`.<br>
 For that use the `Router::setHeader(string  $name, string  $value)` function.
@@ -124,6 +126,8 @@ Router::setHeader(string $name, string $value);
 Router::setHeaders(array $headers); // map, with key as name of the header and value as value
 ```
 If you want to delete a header, set its value to `NULL`.
+
+**IMPORTANT:** All headers *must* be set before calling `Router::init(...)`
 
 ### Ignore Query
 You can set whether the query-part of the url should also be taken into account, when matching the path.<br>
@@ -149,6 +153,7 @@ There are several methods for adding routes:
 all($path, ...$targets) // any method
 
 get($path, ...$targets)
+head($path, ...$targets)
 post($path, ...$targets)
 put($path, ...$targets)
 delete($path, ...$targets)
@@ -177,6 +182,7 @@ These functions can be chained, so you can add multiple routes to a group or the
 
 ### Path
 The **path** of a route can contain regex, but no groups, since they would lead to unwanted behaviour. Therefore please ommit the `(` and `)` characters!
+Alternatively use non capturing groups: `(?:<...>)`
 
 The **path** can also contain parameters:
 ```php
@@ -221,7 +227,7 @@ The first target function receives a **request-array** as the first parameter:
     'path' => string,       // matched path of the route  
     'authorization' => string|null // contains the content of the authorization header if it is set
     'params' => map,        // map containing all parameters of the path (converted to datatype)
-    'post' => mixed|null,   // posted data, if data was posted
+    'post' => mixed|null,   // posted data, if data was posted (not formdata -> use $_POST)
 ]
 ```
 
@@ -275,15 +281,34 @@ When converting the response to JSON, the value is an object (other than `Respon
 `toJSON()`, it (the `toJSON()`-function) will be executed and the output of that function will be used, otherwise the value will be used as is. Then the value will be encoded to JSON with `json_encode(...)`.<br>
 If the value is an array (also within any object), the same is done for every element.
 
+**WARNING:** The usage of `toJSON` is deprecated. Implement the *JsonSerializable* interface instead: https://www.php.net/manual/en/jsonserializable.jsonserialize.php.
+
 ```php
 [...]
 
+// WARN: deprecated version (use version below)
 class User{
     private $name = null;
 
     [...]
 
+    /**
+     * @deprecated use JsonSerializable instead
+     */
     function toJSON(){
+        return [
+            "name" => $this->name
+        ];
+    }
+}
+
+// new version
+class User implements JsonSerializable{
+    private $name = null;
+
+    [...]
+
+    public function jsonSerialize(){
         return [
             "name" => $this->name
         ];
@@ -293,7 +318,7 @@ class User{
 [...]
 
 $router->map('GET', '/user', function(){
-    return new User('Foo'); // toJSON() will be executed
+    return new User('Foo'); // toJSON() or jsonSerialize() will be executed
 });
 ```
 

@@ -118,6 +118,19 @@
         }
 
         /**
+         * Add a route, matching all head requests, to this group
+         * 
+         * @param string $path The path for this route
+         * @param callable[] $targets The targets for this route
+         * @see RouterGroup::map()
+         * 
+         * @return $this
+         */
+        public function head($path, ...$targets){
+            return $this->map('HEAD', $path, ...$targets);
+        }
+
+        /**
          * Add a route, matching the $method, with the given path.
          * 
          * @param string $method The http-request-method (in caps), or a '*' for any

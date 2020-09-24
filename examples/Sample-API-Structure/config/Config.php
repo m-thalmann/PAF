@@ -17,11 +17,11 @@
          * 
          * @return mixed|null The value or null if not found
          */
-        public static function get($path){
+        public static function get($path, $default = NULL){
             $curr = &self::$config;
 
             foreach(explode('.', $path) as $key){
-                if(!isset($curr[$key])) return NULL;
+                if(!isset($curr[$key])) return $default;
 
                 $curr = &$curr[$key];
             }
