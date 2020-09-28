@@ -1,0 +1,47 @@
+name: Docs
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  generate:
+    name: Generate docs
+    runs-on: ubuntu-latest
+
+    steps:
+        - name: Setup PHP
+          uses: shivammathur/setup-php@master
+          with:
+            php-version: '7.2'
+            extensions: mbstring, dom
+            ini-values: memory_limit=2G, display_errors=On, error_reporting=E_ALL ^ E_WARNING
+        - name: Setup phpDoc
+          run: wget -q -O phpDocumentor.phar http://phpdoc.org/phpDocumentor.phar
+
+        - name: Fetch master
+          uses: actions/checkout@v2
+          with:
+            path: master
+        - name: Fetch docs
+          uses: actions/checkout@v2
+          with:
+            path: docs
+            ref: docs
+
+        - name: Build docs
+          run: |
+            ls -lah
+            cd master
+            php ../phpDocumentor.phar run
+        - name: Deploy docs
+          run: |
+            rm -rf docs/*
+            cp -rf master/docs/* docs/
+            cd docs
+            git config --local user.email "ci@thalmann.it"
+            git config --local user.name "GitHub Actions"
+            git add .
+            git commit -m "Updated docs"
+            git push origin docs
+        
