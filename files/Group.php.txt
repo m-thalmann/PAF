@@ -198,7 +198,7 @@ class Group {
             require_once $this->lazyPath;
         }
 
-        // prefer groups over routes
+        // prefer routes over groups
 
         foreach ($this->routes as $route) {
             if ($route->matches($method, $path)) {
