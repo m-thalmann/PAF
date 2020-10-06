@@ -1,59 +1,59 @@
 <?php
-    use PAF\Router\Response;
-    use PAF\Router\Router;
-    
-    // error_reporting(E_ALL ^ E_WARNING); // TODO: enable in production
 
-    // TODO: add all missing libraries and files (marked with *)
+use PAF\Router\Response;
+use PAF\Router\Router;
 
-    try{
-        // Libraries
-        require_once __DIR__ . '/lib/PAF/autloader.php';    // *
-        require_once __DIR__ . '/lib/PHP-JWT/JWT.php';      // *
+// error_reporting(E_ALL ^ E_WARNING); // TODO: enable in production
 
-        //Config
-        require_once __DIR__ . '/config/Config.php';
-        Config::load(__DIR__ . '/config/config.json');
+// TODO: add all missing libraries and files (marked with *)
 
-        // Includes
-        require_once __DIR__ . '/include/functions.php';    // *
-        require_once __DIR__ . '/include/pagination.php';
+try {
+    // Libraries
+    require_once __DIR__ . '/lib/PAF/autloader.php'; // *
+    require_once __DIR__ . '/lib/PHP-JWT/JWT.php'; // *
 
-        // Models
-        // TODO: include models
+    //Config
+    require_once __DIR__ . '/config/Config.php';
+    Config::load(__DIR__ . '/config/config.json');
 
-        // Constants
-        define('VERSION', Config::get('version'));
-        define('ROOT_URL', Config::get('root_url'));
+    // Includes
+    require_once __DIR__ . '/include/functions.php'; // *
+    require_once __DIR__ . '/include/pagination.php';
 
-        // Router
-        Router::setHeaders([
-            "Access-Control-Allow-Headers" => "Content-Type, Authorization"
-        ]);
-        Router::init(ROOT_URL, TRUE);
+    // Models
+    // TODO: include models
 
-        // Auth
-        require_once __DIR__ . '/include/auth.php';         // *
+    // Constants
+    define('VERSION', Config::get('version'));
+    define('ROOT_URL', Config::get('root_url'));
 
-        // Routes
+    // Router
+    Router::setHeaders([
+        "Access-Control-Allow-Headers" => "Content-Type, Authorization",
+    ]);
+    Router::init(ROOT_URL, true);
 
-        try{
-            Router::addRoutes()->get('/', function(){
-                return "Test-API v" . VERSION;
-            });
-    
-            // TODO: include routes
-    
-            if(!Router::execute()){
-                throw new Exception('Method not found');
-            }
-        }catch(Exception $e){
-            Router::output(Response::badRequest($e->getMessage()));
+    // Auth
+    require_once __DIR__ . '/include/auth.php'; // *
+
+    // Routes
+
+    try {
+        Router::addRoutes()->get('/', function () {
+            return "Test-API v" . VERSION;
+        });
+
+        // TODO: include routes
+
+        if (!Router::execute()) {
+            throw new Exception('Method not found');
         }
-    }catch(Exception $e){
-        @header("Content-Type: application/json");
-        @http_response_code(500);
-
-        echo json_encode($e->getMessage());
+    } catch (Exception $e) {
+        Router::output(Response::badRequest($e->getMessage()));
     }
-?>
+} catch (Exception $e) {
+    @header("Content-Type: application/json");
+    @http_response_code(500);
+
+    echo json_encode($e->getMessage());
+}

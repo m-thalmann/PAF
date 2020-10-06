@@ -1,50 +1,50 @@
 <?php
-    use PAF\Router\Response;
 
-    $auth = function($request, $next = NULL){
-        $response = Response::unauthorized('Unauthorized');
+use PAF\Router\Response;
 
-        if($request['authorization'] === NULL){
-            // also possible to check $_GET['auth'] (for example) for a token
+$auth = function ($request, $next = null) {
+    $response = Response::unauthorized('Unauthorized');
 
-            return $response;
-        }
+    if ($request['authorization'] === null) {
+        // also possible to check $_GET['auth'] (for example) for a token
 
-        $token_parts = explode(' ', $request['authorization']); // token form: '<type> <token>'
+        return $response;
+    }
 
-        if(count($token_parts) != 2){
-            return $response;
-        }
+    $token_parts = explode(' ', $request['authorization']); // token form: '<type> <token>'
 
-        list($token_type, $token) = $token_parts;
+    if (count($token_parts) != 2) {
+        return $response;
+    }
 
-        // accept only bearer tokens
-        if($token_type != 'Bearer'){
-            return $response;
-        }
+    list($token_type, $token) = $token_parts;
 
-        $user = NULL;
+    // accept only bearer tokens
+    if ($token_type != 'Bearer') {
+        return $response;
+    }
 
-        // example token:
-        // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MTYyMzkwMjIsInVzZXIiOnsidXNlcm5hbWUiOiJKb2huIn19.YT8-k-evgg6JXfOM2E37-pz7rF84R5yegMjynpmlyHM
+    $user = null;
 
-        try{
-            $data = JWT::decode(JWT_SECRET, $token); // constant secret
+    // example token:
+    // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MTYyMzkwMjIsInVzZXIiOnsidXNlcm5hbWUiOiJKb2huIn19.YT8-k-evgg6JXfOM2E37-pz7rF84R5yegMjynpmlyHM
 
-            $user = $data['user']; // also check with database, if user ok
+    try {
+        $data = JWT::decode(JWT_SECRET, $token); // constant secret
 
-            $request['user'] = $user;
-        }catch(Exception $e){
-            return $response;
-        }
+        $user = $data['user']; // also check with database, if user ok
 
-        if($next !== NULL){
-            return $next($request);
-        }else{
-            return Response::ok([
-                "user" => $user,
-                "info" => "Authorized"
-            ]);
-        }
-    };
-?>
+        $request['user'] = $user;
+    } catch (Exception $e) {
+        return $response;
+    }
+
+    if ($next !== null) {
+        return $next($request);
+    } else {
+        return Response::ok([
+            "user" => $user,
+            "info" => "Authorized",
+        ]);
+    }
+};

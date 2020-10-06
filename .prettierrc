@@ -1,0 +1,13 @@
+{
+    "printWidth": 80,
+    "tabWidth": 4,
+    "useTabs": false,
+    "singleQuote": false,
+    "trailingCommaPHP": true,
+    "semi": true,
+    "trailingComma": "es5",
+    "bracketSpacing": true,
+    "arrowParens": "always",
+    "endOfLine": "crlf",
+    "braceStyle": "1tbs"
+}
