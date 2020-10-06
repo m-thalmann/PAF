@@ -57,7 +57,7 @@ class Route {
      * @see Route::$method
      *
      * @param string $method
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function setMethod($method) {
@@ -99,7 +99,7 @@ class Route {
      *      - 'n' -> number
      *
      * @param string $path
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function setPath($path) {
@@ -189,7 +189,7 @@ class Route {
      * </code>
      *
      * @param array $targets
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function setTargets($targets) {
