@@ -72,6 +72,49 @@ class Response {
         return !empty($this->code) && is_int($this->code);
     }
 
+    /**
+     * Returns whether the response is ok (2xx) or not (anything other)
+     * 
+     * @param bool $strict Whether to check only if it is 200 (true) or any 2xx (false)
+     * @return bool
+     */
+    public function isOk($strict = FALSE){
+        if($strict){
+            return $this->code === 200;
+        }
+
+        return $this->code >= 200 && $this->code < 300;
+    }
+
+    /**
+     * Checks whether the response is ok or not and executes the according callback function
+     * and returns its return value
+     * 
+     * @see Response::isOk()
+     * 
+     * @param callable $callable_ok Gets executed when the response is ok
+     * @param callable|null $callable_error Gets executed when the response is not ok
+     * @param bool|null $strict Whether to check only if it is 200 (true) or any 2xx (false)
+     * 
+     * @return mixed The return value of the called callback function
+     *               (or null if is is not ok and no error function was defined)
+     */
+    public function then($callable_ok, $callable_error = NULL, $strict = FALSE){
+        if(!is_callable($callable_ok) || ($callable_error !== NULL && !is_callable($callable_error))){
+            throw new \InvalidArgumentException('Arguments have to be callable');
+        }
+
+        if($this->isOk($strict)){
+            return $callable_ok($this);
+        }else{
+            if($callable_error !== NULL){
+                return $callable_error($this);
+            }else{
+                return NULL;
+            }
+        }
+    }
+
     /*
      * Helper functions to set http-response-code
      */
@@ -81,6 +124,7 @@ class Response {
      *
      * @param mixed $value
      * @param string $contentType
+     * @return \PAF\Router\Response The created response
      */
     public static function ok(
         $value = null,
@@ -94,6 +138,7 @@ class Response {
      *
      * @param mixed $value
      * @param string $contentType
+     * @return \PAF\Router\Response The created response
      */
     public static function created(
         $value = null,
@@ -107,6 +152,7 @@ class Response {
      *
      * @param mixed $value
      * @param string $contentType
+     * @return \PAF\Router\Response The created response
      */
     public static function noContent(
         $value = null,
@@ -120,6 +166,7 @@ class Response {
      *
      * @param mixed $value
      * @param string $contentType
+     * @return \PAF\Router\Response The created response
      */
     public static function badRequest(
         $value = null,
@@ -133,6 +180,7 @@ class Response {
      *
      * @param mixed $value
      * @param string $contentType
+     * @return \PAF\Router\Response The created response
      */
     public static function unauthorized(
         $value = null,
@@ -146,6 +194,7 @@ class Response {
      *
      * @param mixed $value
      * @param string $contentType
+     * @return \PAF\Router\Response The created response
      */
     public static function forbidden(
         $value = null,
@@ -159,6 +208,7 @@ class Response {
      *
      * @param mixed $value
      * @param string $contentType
+     * @return \PAF\Router\Response The created response
      */
     public static function notFound(
         $value = null,
@@ -172,6 +222,7 @@ class Response {
      *
      * @param mixed $value
      * @param string $contentType
+     * @return \PAF\Router\Response The created response
      */
     public static function methodNotAllowed(
         $value = null,
@@ -185,6 +236,7 @@ class Response {
      *
      * @param mixed $value
      * @param string $contentType
+     * @return \PAF\Router\Response The created response
      */
     public static function conflict(
         $value = null,
@@ -198,6 +250,7 @@ class Response {
      *
      * @param mixed $value
      * @param string $contentType
+     * @return \PAF\Router\Response The created response
      */
     public static function tooManyRequests(
         $value = null,
@@ -211,6 +264,7 @@ class Response {
      *
      * @param mixed $value
      * @param string $contentType
+     * @return \PAF\Router\Response The created response
      */
     public static function error(
         $value = null,
@@ -224,6 +278,7 @@ class Response {
      *
      * @param mixed $value
      * @param string $contentType
+     * @return \PAF\Router\Response The created response
      */
     public static function notImplemented(
         $value = null,

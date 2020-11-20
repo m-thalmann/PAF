@@ -7,7 +7,6 @@ require_once __DIR__ . '/lib/PAF/autoload.php'; // path to autoloader
 define('JWT_SECRET', 'mySuperSecureSecret');
 
 require_once 'JWT.php'; // using JWT tokens; Using the https://github.com/m-thalmann/PHP-JWT library
-// require_once('path/to/JWT.php'); // using JWT tokens; Using the https://github.com/m-thalmann/PHP-JWT library
 require_once 'auth.php';
 
 Router::init();

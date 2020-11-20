@@ -9,7 +9,7 @@ use PAF\Router\Router;
 
 try {
     // Libraries
-    require_once __DIR__ . '/lib/PAF/autloader.php'; // *
+    require_once __DIR__ . '/lib/PAF/autoload.php'; // *
     require_once __DIR__ . '/lib/PHP-JWT/JWT.php'; // *
 
     //Config

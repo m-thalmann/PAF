@@ -14,7 +14,7 @@ This file explains the main concepts and functions of PAF. If you want a more in
 ## Setting up
 
 1. Download this repository and copy the contents of the `src/` folder into (for example) your `lib/PAF` folder
-2. Create a `index.php` file and require the `lib/PAF/autload.php` file. This will automatically load the needed classes. This will **not** interfere with your own/other autoloaders!
+2. Create a `index.php` file and require the `lib/PAF/autoload.php` file. This will automatically load the needed classes. This will **not** interfere with your own/other autoloaders!
     - **Alternatively:** Require each file you need separately
 3. If you want to use the `PAF\Router`, you should also follow step 2 of its setup-guide
 4. Now you are ready to go
@@ -25,6 +25,7 @@ This file explains the main concepts and functions of PAF. If you want a more in
 
 ```php
 <?php
+
 require_once 'path/to/autoload.php';
 
 // start using PAF
@@ -33,8 +34,6 @@ use PAF\Router\Router;
 Router::init();
 
 // ...
-
-?>
 ```
 
 <hr>
@@ -43,7 +42,23 @@ Router::init();
 
 PAF contains different components for different use-cases:
 
--   `PAF\Router` - Contains classes for routing and outputting responses (mainly) as json ([README](src/Router/README.md))
+-   `PAF\Router` - Contains classes for routing and outputting responses (mainly) as json ([README](src/Router), [Documentation](https://m-thalmann.github.io/m-thalmann/namespaces/paf-router.html))
+
+## Documentation generation
+The documentation gets auto-generated on each push to the master-branch. The resulting documentation is then pushed to the docs branch,
+which is then made available through [GitHub-Pages](https://m-thalmann.github.io/PAF).
+
+If you want to generate the documentation for yourself, you have to get the [phpDocumentor](https://www.phpdoc.org/) (v3) by executing the following lines:
+```bash
+wget -O phpDoc https://phpdoc.org/phpDocumentor.phar
+chmod +x phpDoc
+```
+Then you have to make it available globally (by adding an alias for it or by adding it to the `$PATH` variable) and execute it inside the PAF root like shown:
+```bash
+phpDoc run --visibility="public,protected"
+```
+
+If you also want to include *private* functions and variables, you can omit the visibility flag.
 
 ## Contributing
 

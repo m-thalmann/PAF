@@ -120,7 +120,7 @@ class Route {
 
         if (strlen($path) > 0) {
             $pathRegex = preg_replace_callback(
-                '/\{\{(|\*|s|i|n):(\w+)\}\}/',
+                '/\{\{(?: )?(|\*|s|i|n):(\w+)(?: )?\}\}/',
                 function ($match) {
                     $type =
                         $match[1] !== '' && $match[1] !== 's' ? $match[1] : '*';

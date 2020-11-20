@@ -3,6 +3,8 @@
 This router is used to create the API routing structure and outputting the result.<br>
 It was inspired by [AltoRouter](https://github.com/dannyvankooten/AltoRouter) and [ExpressJS](https://expressjs.com/)
 
+[Documentation](https://m-thalmann.github.io/m-thalmann/namespaces/paf-router.html)
+
 ## Table of contents
 
 -   [Setting up](#setting-up)
@@ -51,6 +53,7 @@ It was inspired by [AltoRouter](https://github.com/dannyvankooten/AltoRouter) an
 
 ```php
 <?php
+
 // TODO: import the autoloader or the necessary classes
 
 use PAF\Router\Router;
@@ -89,7 +92,6 @@ Router::group('/users')
 
 Router::execute(); // start the path and request-method matching
 // returns a boolean, whether a route was found or not
-?>
 ```
 
 This example contains three routes: `GET /api`, `GET /api/users` and `GET /api/users/{id}`.
@@ -108,10 +110,12 @@ This example contains three routes: `GET /api`, `GET /api/users` and `GET /api/u
 
 ## Classes
 
--   `PAF\Router\Router`
--   `PAF\Router\Group`
--   `PAF\Router\Route`
--   `PAF\Router\Response`
+| Class                 | Documentation                                                             |
+|-----------------------|---------------------------------------------------------------------------|
+| `PAF\Router\Router`   | [Link](https://m-thalmann.github.io/PAF/classes/PAF-Router-Router.html)   |
+| `PAF\Router\Group`    | [Link](https://m-thalmann.github.io/PAF/classes/PAF-Router-Group.html)    |
+| `PAF\Router\Route`    | [Link](https://m-thalmann.github.io/PAF/classes/PAF-Router-Route.html)    |
+| `PAF\Router\Response` | [Link](https://m-thalmann.github.io/PAF/classes/PAF-Router-Response.html) |
 
 <hr>
 
@@ -203,6 +207,8 @@ Router::addRoutes()
 
 These functions can be chained, so you can add multiple routes to a group or the base path (fluent api).
 
+**IMPORTANT:** The order of the function calls matters. The first found match is selected!
+
 ### Path
 
 The **path** of a route can contain regex, but no groups, since they would lead to unwanted behaviour. Therefore please ommit the `(` and `)` characters!
@@ -274,11 +280,27 @@ Adding groups to the base path:
 Router::group('/user'); // access the group object here (add routes, ...) (fluent api)
 ```
 
+Adding routes to a group:
+
+```php
+Router::group('/user')
+            ->get('/', function(){
+                // ...
+                return $response;
+            })
+            ->post('/', function($req){
+                // ...
+                return $response;
+            });
+```
+
 Adding groups to a group:
 
 ```php
 Router::group('/users')->group('/home'); // ...
 ```
+
+**IMPORTANT:** The order of the groups matters. The first found match is selected!
 
 ### Lazy groups
 
@@ -417,5 +439,5 @@ This function is normally used by the router to output the return value of the m
 
 Info: Make sure to copy the needed files into the example's folder (.htaccess, JWT.php, ...)
 
--   [Authorization](https://github.com/m-thalmann/PAF/tree/master/examples/Authorization)
--   [Sample API Structure](https://github.com/m-thalmann/PAF/tree/master/examples/Sample-API-Structure)
+-   [Authorization](https://github.com/m-thalmann/PAF/tree/master/examples/Router/Authorization)
+-   [Sample API Structure](https://github.com/m-thalmann/PAF/tree/master/examples/Router/Sample-API-Structure)

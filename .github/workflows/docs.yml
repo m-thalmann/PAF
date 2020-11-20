@@ -13,9 +13,10 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@master
               with:
-                  php-version: "7.2"
+                  php-version: "7.4"
                   extensions: mbstring, dom
-                  ini-values: memory_limit=2G, display_errors=On, error_reporting=E_ALL ^ E_WARNING
+                  ini-values: memory_limit=2G, display_errors=On
+
             - name: Setup phpDoc
               run: wget -q -O phpDocumentor.phar http://phpdoc.org/phpDocumentor.phar
 
@@ -28,12 +29,13 @@ jobs:
               with:
                   path: docs
                   ref: docs
-
+            
             - name: Build docs
               run: |
                   ls -lah
                   cd master
-                  php ../phpDocumentor.phar run
+                  php ../phpDocumentor.phar run --visibility="public,protected"
+
             - name: Deploy docs
               run: |
                   rm -rf docs/*
