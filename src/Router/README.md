@@ -3,7 +3,7 @@
 This router is used to create the API routing structure and outputting the result.<br>
 It was inspired by [AltoRouter](https://github.com/dannyvankooten/AltoRouter) and [ExpressJS](https://expressjs.com/)
 
-[Documentation](https://m-thalmann.github.io/m-thalmann/namespaces/paf-router.html)
+[Documentation](https://m-thalmann.github.io/PAF/namespaces/paf-router.html)
 
 ## Table of contents
 

@@ -42,7 +42,7 @@ Router::init();
 
 PAF contains different components for different use-cases:
 
--   `PAF\Router` - Contains classes for routing and outputting responses (mainly) as json ([README](src/Router), [Documentation](https://m-thalmann.github.io/m-thalmann/namespaces/paf-router.html))
+-   `PAF\Router` - Contains classes for routing and outputting responses (mainly) as json ([README](src/Router), [Documentation](https://m-thalmann.github.io/PAF/namespaces/paf-router.html))
 
 ## Documentation generation
 The documentation gets auto-generated on each push to the master-branch. The resulting documentation is then pushed to the docs branch,
