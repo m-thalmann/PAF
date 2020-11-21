@@ -44,5 +44,9 @@ jobs:
                   git config --local user.email "ci@thalmann.it"
                   git config --local user.name "GitHub Actions"
                   git add .
-                  git commit -m "Updated docs"
-                  git push origin docs
+                  if ! git diff-index --quiet HEAD --; then
+                    git commit -m "Updated docs"
+                    git push origin docs
+                  else
+                    echo no changes
+                  fi

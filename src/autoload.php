@@ -7,6 +7,8 @@ spl_autoload_register(function ($class) {
         return;
     }
 
+    $class = str_replace('\\', '/', $class);
+
     $path = __DIR__ . '/' . substr($class, strlen(__NAMESPACE__) + 1) . '.php';
 
     require_once $path;
