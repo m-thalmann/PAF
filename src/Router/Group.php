@@ -188,6 +188,7 @@ class Group {
      *
      * @param string $method The http-request-method
      * @param string $path The path to be matched
+     *
      * @return array|null The matching-info, if a match was found, otherwise null
      */
     public function resolve($method, $path) {

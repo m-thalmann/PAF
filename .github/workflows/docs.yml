@@ -29,7 +29,7 @@ jobs:
               with:
                   path: docs
                   ref: docs
-            
+
             - name: Build docs
               run: |
                   ls -lah

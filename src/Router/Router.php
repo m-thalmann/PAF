@@ -43,7 +43,7 @@ class Router {
     private static $inited = false;
 
     /**
-     * Router should not be instantiatable
+     * Router should not be instantiable
      */
     private function __construct() {
     }
@@ -61,6 +61,8 @@ class Router {
      *
      * @param string $basePath The base path, from where the router should match
      * @param bool $corsEnabled If cors should be enabled
+     *
+     * @return void
      */
     public static function init($basePath = '', $corsEnabled = false) {
         // can only be inited once
@@ -106,6 +108,8 @@ class Router {
      * Sets the base path for the router
      *
      * @param string $path The path to be set
+     *
+     * @return void
      */
     private static function setBasePath($path) {
         if (is_string($path)) {
@@ -132,6 +136,8 @@ class Router {
      * Important: All headers must be set before calling Router::init()
      *
      * @param array $headers The headers to be set, with the header-name as key and the value as value
+     *
+     * @return void
      */
     public static function setHeaders($headers) {
         if (!is_array($headers)) {
@@ -152,6 +158,8 @@ class Router {
      *
      * @param string $name The name of the header
      * @param string $value The value of the header
+     *
+     * @return void
      */
     public static function setHeader($name, $value) {
         if (is_string($name) && $value === null) {
@@ -180,6 +188,7 @@ class Router {
      * Returns a specific custom http-header
      *
      * @param string $name The name of the header
+     *
      * @return string The value of the set header
      */
     public static function getHeader($name) {
@@ -206,6 +215,8 @@ class Router {
      *
      * @param bool $enabled If cors should be enabled or not
      * @see Router::$corsEnabled
+     *
+     * @return void
      */
     private static function setCorsEnabled($enabled) {
         self::$corsEnabled = !!$enabled;
@@ -225,6 +236,8 @@ class Router {
      *
      * @param bool $ignored If the query-part should be ignored
      * @see Router::$ignoreQuery
+     *
+     * @return void
      */
     public static function setIgnoreQuery($ignored) {
         self::$ignoreQuery = !!$ignored;
@@ -364,6 +377,8 @@ class Router {
      * sets the http-response-code and outputs the (converted) parameter value
      *
      * @param mixed $ret The output value
+     *
+     * @return void
      */
     public static function output($ret) {
         $contentType = 'application/json';
@@ -407,6 +422,7 @@ class Router {
      * WARN: The usage of toJSON() is deprecated. Implement the JsonSerializable interface!
      *
      * @param mixed $value The value that should be converted
+     *
      * @return mixed The converted value response
      */
     private static function convertResponse($value) {

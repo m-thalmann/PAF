@@ -45,20 +45,24 @@ PAF contains different components for different use-cases:
 -   `PAF\Router` - Contains classes for routing and outputting responses (mainly) as json ([README](src/Router), [Documentation](https://m-thalmann.github.io/PAF/namespaces/paf-router.html))
 
 ## Documentation generation
+
 The documentation gets auto-generated on each push to the master-branch. The resulting documentation is then pushed to the docs branch,
 which is then made available through [GitHub-Pages](https://m-thalmann.github.io/PAF).
 
 If you want to generate the documentation for yourself, you have to get the [phpDocumentor](https://www.phpdoc.org/) (v3) by executing the following lines:
+
 ```bash
 wget -O phpDoc https://phpdoc.org/phpDocumentor.phar
 chmod +x phpDoc
 ```
+
 Then you have to make it available globally (by adding an alias for it or by adding it to the `$PATH` variable) and execute it inside the PAF root like shown:
+
 ```bash
 phpDoc run --visibility="public,protected"
 ```
 
-If you also want to include *private* functions and variables, you can omit the visibility flag.
+If you also want to include _private_ functions and variables, you can omit the visibility flag.
 
 ## Contributing
 

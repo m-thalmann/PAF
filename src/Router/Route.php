@@ -58,6 +58,7 @@ class Route {
      *
      * @param string $method
      * @throws \InvalidArgumentException
+     *
      * @return void
      */
     public function setMethod($method) {
@@ -100,6 +101,7 @@ class Route {
      *
      * @param string $path
      * @throws \InvalidArgumentException
+     *
      * @return void
      */
     public function setPath($path) {
@@ -190,6 +192,7 @@ class Route {
      *
      * @param array $targets
      * @throws \InvalidArgumentException
+     *
      * @return void
      */
     public function setTargets($targets) {
@@ -231,6 +234,7 @@ class Route {
      *
      * @param string $method The method that should be matched
      * @param string $path The path that should be matched
+     *
      * @return bool True if the route matches with the path and method, false otherwise
      */
     public function matches($method, $path) {

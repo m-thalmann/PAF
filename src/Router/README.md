@@ -111,7 +111,7 @@ This example contains three routes: `GET /api`, `GET /api/users` and `GET /api/u
 ## Classes
 
 | Class                 | Documentation                                                             |
-|-----------------------|---------------------------------------------------------------------------|
+| --------------------- | ------------------------------------------------------------------------- |
 | `PAF\Router\Router`   | [Link](https://m-thalmann.github.io/PAF/classes/PAF-Router-Router.html)   |
 | `PAF\Router\Group`    | [Link](https://m-thalmann.github.io/PAF/classes/PAF-Router-Group.html)    |
 | `PAF\Router\Route`    | [Link](https://m-thalmann.github.io/PAF/classes/PAF-Router-Route.html)    |
@@ -284,14 +284,14 @@ Adding routes to a group:
 
 ```php
 Router::group('/user')
-            ->get('/', function(){
-                // ...
-                return $response;
-            })
-            ->post('/', function($req){
-                // ...
-                return $response;
-            });
+    ->get('/', function () {
+        // ...
+        return $response;
+    })
+    ->post('/', function ($req) {
+        // ...
+        return $response;
+    });
 ```
 
 Adding groups to a group:
