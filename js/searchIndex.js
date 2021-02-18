@@ -81,6 +81,11 @@ Search.appendIndex(
             "summary": "Verifies\u0020if\u0020this\u0020object\u0020is\u0020correct",
             "url": "classes/PAF-Router-Response.html#method_verify"
         },                {
+            "fqsen": "\\PAF\\Router\\Response\u003A\u003AjsonSerialize\u0028\u0029",
+            "name": "jsonSerialize",
+            "summary": "",
+            "url": "classes/PAF-Router-Response.html#method_jsonSerialize"
+        },                {
             "fqsen": "\\PAF\\Router\\Response\u003A\u003AisOk\u0028\u0029",
             "name": "isOk",
             "summary": "Returns\u0020whether\u0020the\u0020response\u0020is\u0020ok\u0020\u00282xx\u0029\u0020or\u0020not\u0020\u0028anything\u0020other\u0029",
