@@ -312,8 +312,10 @@ class Router {
             $requestUrl = substr($requestUrl, 0, strlen($requestUrl) - 2);
         }
 
+        $requestUrl = explode('#', $requestUrl, 2)[0];
+
         if (self::getIgnoreQuery()) {
-            $requestUrl = explode('?', $requestUrl)[0];
+            $requestUrl = explode('?', $requestUrl, 2)[0];
         }
 
         $requestMethod = isset($_SERVER['REQUEST_METHOD'])

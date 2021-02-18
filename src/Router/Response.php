@@ -8,7 +8,7 @@ namespace PAF\Router;
  * @license MIT
  * @author Matthias Thalmann
  */
-class Response {
+class Response implements \JsonSerializable {
     /**
      * @var mixed The value of the response that should be displayed
      */
@@ -72,6 +72,15 @@ class Response {
      */
     public function verify() {
         return !empty($this->code) && is_int($this->code);
+    }
+
+    /**
+     * @see \JsonSerializable
+     *
+     * @return array The value of the response
+     */
+    public function jsonSerialize() {
+        return $this->value;
     }
 
     /**

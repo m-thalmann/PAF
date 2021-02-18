@@ -242,7 +242,7 @@ class Route {
             return false;
         }
 
-        return preg_match($this->pathRegex, $path);
+        return $this->getPath() === '*' || preg_match($this->pathRegex, $path);
     }
 
     /**
