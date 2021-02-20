@@ -43,6 +43,7 @@ Router::init();
 PAF contains different components for different use-cases:
 
 -   `PAF\Router` - Contains classes for routing and outputting responses (mainly) as json ([README](src/Router), [Documentation](https://m-thalmann.github.io/PAF/namespaces/paf-router.html))
+-   `PAF\Model` - Contains classes for mapping database entries to PHP objects ([README](src/Model), [Documentation](https://m-thalmann.github.io/PAF/namespaces/paf-model.html))
 
 ## Documentation generation
 
