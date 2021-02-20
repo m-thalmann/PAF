@@ -259,7 +259,10 @@ class Route {
     public function execute($method, $path, $request) {
         $matchedParams = [];
 
-        if (!preg_match($this->pathRegex, $path, $matchedParams)) {
+        if (
+            $this->path !== '*' &&
+            !preg_match($this->pathRegex, $path, $matchedParams)
+        ) {
             return null;
         }
 
