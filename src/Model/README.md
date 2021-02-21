@@ -2,6 +2,8 @@
 
 This model is used to map database entries to PHP objects
 
+**INFO:** Currently the functionalities have **only** been tested using **MySQL**!
+
 [Documentation](https://m-thalmann.github.io/PAF/namespaces/paf-model.html)
 
 ## Table of contents
@@ -138,7 +140,7 @@ $res = User::query()->getRawResponse(); // no model instances, only values
 
 ### Database
 
-**Warning:** Currently the functionalities where **only** tested using **MySQL**!
+**Warning:** Currently the functionalities have **only** been tested using **MySQL**!
 
 Before using the models, you need to set a database connection (PDO). There are three functions to do so:
 
