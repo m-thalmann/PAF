@@ -22,6 +22,7 @@ This model is used to map database entries to PHP objects
             -   [Saving](#saving)
         -   [Validation](#validation)
         -   [Changes](#changes)
+        -   [Retrieving items from the database](#retrieving-items-from-the-database)
         -   [Reloading](#reloading)
         -   [Using with router](#using-with-router)
     -   [Collection](#collection)
@@ -639,6 +640,24 @@ User::count("username LIKE :username", [":username" => "a%"]);
 ```
 
 For more information on the `query()` function see the [query section](#query) below.
+
+You can add functions to your model to retrieve items:
+
+```php
+class User extends Model {
+    // ...
+
+    public static function getById($id){
+        return User::get("id = :id", [ ":id" => $id ]);
+    }
+
+    public static function searchByUsername($username){
+        return User::get("username LIKE :username", [ ":username" => "%$username%" ]);
+    }
+
+    // ...
+}
+```
 
 #### Reloading
 
