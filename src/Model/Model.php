@@ -566,7 +566,7 @@ abstract class Model implements \JsonSerializable {
      * @param array $values The values to be set, with the name of the property as key and the value as value
      * @param bool $convert Whether the values should be converted before setting them (according to the property type)
      *
-     * @return Model The created model instance
+     * @return static The created model instance
      */
     final public static function fromValues(array $values, $convert = true) {
         $m = new static();
@@ -609,7 +609,7 @@ abstract class Model implements \JsonSerializable {
      * @param bool $ignoreEditable Whether the field should be set, even if it is not editable
      * @param bool $fromDB Whether the value is received from the database or not. If it is, the original value is set aswell.
      *
-     * @return Model The created model instance
+     * @return static The created model instance
      */
     final protected static function create(
         array $values,
@@ -1238,6 +1238,8 @@ abstract class Model implements \JsonSerializable {
         $whereClause,
         array $values = []
     ) {
+        self::init();
+
         $stmt = static::db()->prepare(
             "DELETE FROM " .
                 self::$definitions[static::class]['tablename'] .
@@ -1273,7 +1275,7 @@ abstract class Model implements \JsonSerializable {
      *
      * @return bool true if it was successful, false otherwise
      */
-    final public function save($reload = true) {
+    public function save($reload = true) {
         $this->checkDeleted();
 
         $validationError = $this->getFirstValidationError();
@@ -1456,6 +1458,8 @@ abstract class Model implements \JsonSerializable {
      * @return void
      */
     final static function reloadAll() {
+        self::init();
+        
         if (static::class === __NAMESPACE__ . "\Model") {
             foreach (self::$instances as $instances) {
                 foreach ($instances as $instance) {
@@ -1538,7 +1542,7 @@ abstract class Model implements \JsonSerializable {
         }
 
         return [
-            "sql" => implode(', ', $primaries),
+            "sql" => implode(' AND ', $primaries),
             "values" => $values,
         ];
     }
@@ -1623,7 +1627,7 @@ abstract class Model implements \JsonSerializable {
      * @return array The found annotations with the annotation name as key and the value as value (is null if only annotation exists)
      */
     private static function getDocInfo($doc) {
-        $rows = array_slice(explode("\r\n", $doc), 1, -1);
+        $rows = array_slice(explode(PHP_EOL, $doc), 1, -1);
 
         $info = [];
 
