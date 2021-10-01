@@ -76,6 +76,11 @@ Search.appendIndex(
             "summary": "Registers\u0020a\u0020PDO\u002Dconnection\u0020provider\u0020for\u0020the\u0020model\u002Dclass,\u0020if\u0020it\u0020is\u0020set,\nor\u0020for\u0020all\u0020model\u0020classes\u0020\u0028as\u0020default\u0020provider\u0029,\u0020if\u0020no\u0020model\u002Dclass\u0020is\u0020set.",
             "url": "classes/PAF-Model-Database.html#method_registerProvider"
         },                {
+            "fqsen": "\\PAF\\Model\\Database\u003A\u003AunregisterProvider\u0028\u0029",
+            "name": "unregisterProvider",
+            "summary": "Unregisters\u0020a\u0020provider\u0020for\u0020the\u0020model\u002Dclass,\u0020if\u0020it\u0020is\u0020set,\nor\u0020for\u0020all\u0020model\u0020classes\u0020\u0028as\u0020default\u0020provider\u0029,\u0020if\u0020no\u0020model\u002Dclass\u0020is\u0020set.",
+            "url": "classes/PAF-Model-Database.html#method_unregisterProvider"
+        },                {
             "fqsen": "\\PAF\\Model\\Database\u003A\u003AsetDatabaseDSN\u0028\u0029",
             "name": "setDatabaseDSN",
             "summary": "Sets\u0020the\u0020provider\u0020using\u0020a\u0020PDO\u0020database\u0020connection\u0020string\u0020\u0028DSN\u0029",

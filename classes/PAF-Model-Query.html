@@ -8,12 +8,16 @@
     <link rel="icon" href="images/favicon.ico"/>
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/base.css">
-            <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+            <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/template.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/themes/prism-okaidia.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.css">
                 <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
         <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/js/all.min.js" integrity="sha256-0vuk8LXoyrmCjp1f0O300qo1M75ZQyhH9X3J6d+scmk=" crossorigin="anonymous"></script>
         <script src="js/search.js"></script>
         <script defer src="js/searchIndex.js"></script>
     </head>
@@ -48,17 +52,27 @@
     Menu
 </label>
 <aside class="phpdocumentor-column -four phpdocumentor-sidebar">
-    
-    <section class="phpdocumentor-sidebar__category">
-        <h2 class="phpdocumentor-sidebar__category-header">Namespaces</h2>
-                                                <h4 class="phpdocumentor-sidebar__root-namespace"><a href="namespaces/paf.html"><abbr title="\PAF">PAF</abbr></a></h4>
-                <ul class="phpdocumentor-list">
-                                            <li><a href="namespaces/paf-model.html"><abbr title="\PAF\Model">Model</abbr></a></li>
-                                            <li><a href="namespaces/paf-router.html"><abbr title="\PAF\Router">Router</abbr></a></li>
-                                    </ul>
-                        </section>
+                    <section class="phpdocumentor-sidebar__category">
+            <h2 class="phpdocumentor-sidebar__category-header">Namespaces</h2>
+                                    <h4 class="phpdocumentor-sidebar__root-namespace"><a href="namespaces/paf.html">PAF</a></h4>
+    <ul class="phpdocumentor-list">
+                    <li>
+                <a href="namespaces/paf-model.html">Model</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/paf-router.html">Router</a>
+                
+            </li>
+            </ul>
 
-    
+                        </section>
+                <section class="phpdocumentor-sidebar__category">
+            <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
+                                    <h4 class="phpdocumentor-sidebar__root-namespace"><a href="packages/Application.html">Application</a></h4>
+
+                        </section>
+            
     <section class="phpdocumentor-sidebar__category">
         <h2 class="phpdocumentor-sidebar__category-header">Reports</h2>
                 <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/deprecated.html">Deprecated</a></h3>
@@ -83,6 +97,12 @@
     Query
 
     
+            <div class="phpdocumentor-element__package">
+            in package
+            <ul class="phpdocumentor-breadcrumbs">
+                                    <li class="phpdocumentor-breadcrumb"><a href="packages/Application.html">Application</a></li>
+                            </ul>
+        </div>
     
     
     </h2>
@@ -91,11 +111,11 @@
     <abbr class="phpdocumentor-element-found-in__file" title="Model/Query.php"><a href="files/model-query.html"><abbr title="Model/Query.php">Query.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">16</span>
-</aside>
+
+    </aside>
 
             <p class="phpdocumentor-summary">This class provides a very simple sql query builder for the models.</p>
 
-    <section class="phpdocumentor-description"></section>
 
 
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
@@ -109,8 +129,7 @@
                 <dd class="phpdocumentor-tag-list__definition">
                                                                                     <span class="phpdocumentor-tag-link"><a href="classes/PAF-Model-Model.html#method_query"><abbr title="\PAF\Model\Model::query()">Model::query()</abbr></a></span>
                                         
-                                                 <section class="phpdocumentor-description"></section>
-
+                                             
                                     </dd>
                             <dt class="phpdocumentor-tag-list__entry">
                     <span class="phpdocumentor-tag__name">see</span>
@@ -118,8 +137,7 @@
                 <dd class="phpdocumentor-tag-list__definition">
                                                                                     <span class="phpdocumentor-tag-link"><a href="classes/PAF-Model-Model.html#method_get"><abbr title="\PAF\Model\Model::get()">Model::get()</abbr></a></span>
                                         
-                                                 <section class="phpdocumentor-description"></section>
-
+                                             
                                     </dd>
                                                 <dt class="phpdocumentor-tag-list__entry">
                     <span class="phpdocumentor-tag__name">license</span>
@@ -268,7 +286,8 @@ constraints) and calculates the total items and pages needed.</dd>
     <abbr class="phpdocumentor-element-found-in__file" title="Model/Query.php"><a href="files/model-query.html"><abbr title="Model/Query.php">Query.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">49</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Creates an instance of the query and checks the class name</p>
 
@@ -276,8 +295,7 @@ constraints) and calculates the total items and pages needed.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                 <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$modelClass</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$whereClause</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$values</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -321,8 +339,7 @@ constraints) and calculates the total items and pages needed.</dd>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                                     <span class="phpdocumentor-tag-link"><a href="https://phpdelusions.net/pdo#prepared"><abbr title="https://phpdelusions.net/pdo#prepared">https://phpdelusions.net/pdo#prepared</abbr></a></span>
                                         
-                                                 <section class="phpdocumentor-description"></section>
-
+                                             
                                     </dd>
                                                 <dt class="phpdocumentor-tag-list__entry">
                     <span class="phpdocumentor-tag__name">throws</span>
@@ -339,8 +356,7 @@ constraints) and calculates the total items and pages needed.</dd>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type">mixed</span>
             &mdash;
-            <section class="phpdocumentor-description"></section>
-
+        
     
 </article>
                     <article
@@ -357,7 +373,8 @@ constraints) and calculates the total items and pages needed.</dd>
     <abbr class="phpdocumentor-element-found-in__file" title="Model/Query.php"><a href="files/model-query.html"><abbr title="Model/Query.php">Query.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">304</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Returns the number of rows found for the given where-clause</p>
 
@@ -365,8 +382,7 @@ constraints) and calculates the total items and pages needed.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                 <span class="phpdocumentor-signature__name">count</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
     
     
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
@@ -380,8 +396,7 @@ constraints) and calculates the total items and pages needed.</dd>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                                     <span class="phpdocumentor-tag-link"><a href="classes/PAF-Model-Model.html#method_count"><abbr title="\PAF\Model\Model::count()">Model::count()</abbr></a></span>
                                         
-                                                 <section class="phpdocumentor-description"></section>
-
+                                             
                                     </dd>
                         </dl>
 
@@ -407,7 +422,8 @@ constraints) and calculates the total items and pages needed.</dd>
     <abbr class="phpdocumentor-element-found-in__file" title="Model/Query.php"><a href="files/model-query.html"><abbr title="Model/Query.php">Query.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">315</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Deletes the items from the database using the where-clause</p>
 
@@ -415,8 +431,7 @@ constraints) and calculates the total items and pages needed.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                 <span class="phpdocumentor-signature__name">delete</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
     
     
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
@@ -430,8 +445,7 @@ constraints) and calculates the total items and pages needed.</dd>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                                     <span class="phpdocumentor-tag-link"><a href="classes/PAF-Model-Model.html#method_deleteByQuery"><abbr title="\PAF\Model\Model::deleteByQuery()">Model::deleteByQuery()</abbr></a></span>
                                         
-                                                 <section class="phpdocumentor-description"></section>
-
+                                             
                                     </dd>
                         </dl>
 
@@ -457,7 +471,8 @@ constraints) and calculates the total items and pages needed.</dd>
     <abbr class="phpdocumentor-element-found-in__file" title="Model/Query.php"><a href="files/model-query.html"><abbr title="Model/Query.php">Query.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">233</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Retrieves the items from the database using the set constraints (where, order, limit, offset)</p>
 
@@ -465,8 +480,7 @@ constraints) and calculates the total items and pages needed.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                 <span class="phpdocumentor-signature__name">get</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/PAF-Model-Collection.html"><abbr title="\PAF\Model\Collection">Collection</abbr></a></span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
     
     
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
@@ -480,16 +494,14 @@ constraints) and calculates the total items and pages needed.</dd>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                                     <span class="phpdocumentor-tag-link"><a href="classes/PAF-Model-Model.html#method_get"><abbr title="\PAF\Model\Model::get()">Model::get()</abbr></a></span>
                                         
-                                                 <section class="phpdocumentor-description"></section>
-
+                                             
                                     </dd>
                         </dl>
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type"><a href="classes/PAF-Model-Collection.html"><abbr title="\PAF\Model\Collection">Collection</abbr></a></span>
             &mdash;
-            <section class="phpdocumentor-description"></section>
-
+        
     
 </article>
                     <article
@@ -506,7 +518,8 @@ constraints) and calculates the total items and pages needed.</dd>
     <abbr class="phpdocumentor-element-found-in__file" title="Model/Query.php"><a href="files/model-query.html"><abbr title="Model/Query.php">Query.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">253</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Retrieves the items from the database using the set constraints (where, order, limit, offset)
 and returns only the values (no models)</p>
@@ -515,8 +528,7 @@ and returns only the values (no models)</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                 <span class="phpdocumentor-signature__name">getRaw</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$allProperties</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -542,16 +554,14 @@ and returns only the values (no models)</p>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                                     <span class="phpdocumentor-tag-link"><a href="classes/PAF-Model-Model.html#method_getRaw"><abbr title="\PAF\Model\Model::getRaw()">Model::getRaw()</abbr></a></span>
                                         
-                                                 <section class="phpdocumentor-description"></section>
-
+                                             
                                     </dd>
                         </dl>
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
             &mdash;
-            <section class="phpdocumentor-description"></section>
-
+        
     
 </article>
                     <article
@@ -568,7 +578,8 @@ and returns only the values (no models)</p>
     <abbr class="phpdocumentor-element-found-in__file" title="Model/Query.php"><a href="files/model-query.html"><abbr title="Model/Query.php">Query.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">287</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Returns a response with the raw values and the http-status-code
 set according to the number of items</p>
@@ -577,8 +588,7 @@ set according to the number of items</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                 <span class="phpdocumentor-signature__name">getRawResponse</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$allProperties</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/PAF-Router-Response.html"><abbr title="\PAF\Router\Response">Response</abbr></a></span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -604,16 +614,14 @@ set according to the number of items</p>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                                     <span class="phpdocumentor-tag-link"><a href="classes/PAF-Model-Query.html#method_getRaw"><abbr title="\PAF\Model\Query::getRaw()">Query::getRaw()</abbr></a></span>
                                         
-                                                 <section class="phpdocumentor-description"></section>
-
+                                             
                                     </dd>
                         </dl>
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type"><a href="classes/PAF-Router-Response.html"><abbr title="\PAF\Router\Response">Response</abbr></a></span>
             &mdash;
-            <section class="phpdocumentor-description"></section>
-
+        
     
 </article>
                     <article
@@ -630,7 +638,8 @@ set according to the number of items</p>
     <abbr class="phpdocumentor-element-found-in__file" title="Model/Query.php"><a href="files/model-query.html"><abbr title="Model/Query.php">Query.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">273</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Returns a response with the Collection (containing the items) as value
 and the http-status-code set according to the number of items</p>
@@ -639,8 +648,7 @@ and the http-status-code set according to the number of items</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                 <span class="phpdocumentor-signature__name">getResponse</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/PAF-Router-Response.html"><abbr title="\PAF\Router\Response">Response</abbr></a></span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
     
     
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
@@ -654,8 +662,7 @@ and the http-status-code set according to the number of items</p>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                                     <span class="phpdocumentor-tag-link"><a href="classes/PAF-Model-Query.html#method_get"><abbr title="\PAF\Model\Query::get()">Query::get()</abbr></a></span>
                                         
-                                                 <section class="phpdocumentor-description"></section>
-
+                                             
                                     </dd>
                             <dt class="phpdocumentor-tag-list__entry">
                     <span class="phpdocumentor-tag__name">see</span>
@@ -663,16 +670,14 @@ and the http-status-code set according to the number of items</p>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                                     <span class="phpdocumentor-tag-link"><a href="classes/PAF-Model-Collection.html#method_getResponse"><abbr title="\PAF\Model\Collection::getResponse()">Collection::getResponse()</abbr></a></span>
                                         
-                                                 <section class="phpdocumentor-description"></section>
-
+                                             
                                     </dd>
                         </dl>
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type"><a href="classes/PAF-Router-Response.html"><abbr title="\PAF\Router\Response">Response</abbr></a></span>
             &mdash;
-            <section class="phpdocumentor-description"></section>
-
+        
     
 </article>
                     <article
@@ -689,7 +694,8 @@ and the http-status-code set according to the number of items</p>
     <abbr class="phpdocumentor-element-found-in__file" title="Model/Query.php"><a href="files/model-query.html"><abbr title="Model/Query.php">Query.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">106</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Sets the amount of results returned</p>
 
@@ -697,8 +703,7 @@ and the http-status-code set according to the number of items</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                 <span class="phpdocumentor-signature__name">limit</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$amount</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">$this</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -724,16 +729,14 @@ and the http-status-code set according to the number of items</p>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                 <span class="phpdocumentor-tag-link"><abbr title="\InvalidArgumentException">InvalidArgumentException</abbr></span>
                                                             
-                                                 <section class="phpdocumentor-description"></section>
-
+                                             
                                     </dd>
                         </dl>
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type">$this</span>
             &mdash;
-            <section class="phpdocumentor-description"></section>
-
+        
     
 </article>
                     <article
@@ -750,7 +753,8 @@ and the http-status-code set according to the number of items</p>
     <abbr class="phpdocumentor-element-found-in__file" title="Model/Query.php"><a href="files/model-query.html"><abbr title="Model/Query.php">Query.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">124</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Sets how much the results should be offset</p>
 
@@ -758,8 +762,7 @@ and the http-status-code set according to the number of items</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                 <span class="phpdocumentor-signature__name">offset</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$amount</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">$this</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -785,16 +788,14 @@ and the http-status-code set according to the number of items</p>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                 <span class="phpdocumentor-tag-link"><abbr title="\InvalidArgumentException">InvalidArgumentException</abbr></span>
                                                             
-                                                 <section class="phpdocumentor-description"></section>
-
+                                             
                                     </dd>
                         </dl>
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type">$this</span>
             &mdash;
-            <section class="phpdocumentor-description"></section>
-
+        
     
 </article>
                     <article
@@ -811,7 +812,8 @@ and the http-status-code set according to the number of items</p>
     <abbr class="phpdocumentor-element-found-in__file" title="Model/Query.php"><a href="files/model-query.html"><abbr title="Model/Query.php">Query.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">75</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Adds a new part to the order-clause</p>
 
@@ -819,8 +821,7 @@ and the http-status-code set according to the number of items</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                 <span class="phpdocumentor-signature__name">orderBy</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$column</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$direction</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;asc&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$ignoreError</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">$this</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -864,16 +865,14 @@ and the http-status-code set according to the number of items</p>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                 <span class="phpdocumentor-tag-link"><abbr title="\InvalidArgumentException">InvalidArgumentException</abbr></span>
                                                             
-                                                 <section class="phpdocumentor-description"></section>
-
+                                             
                                     </dd>
                         </dl>
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type">$this</span>
             &mdash;
-            <section class="phpdocumentor-description"></section>
-
+        
     
 </article>
                     <article
@@ -890,7 +889,8 @@ and the http-status-code set according to the number of items</p>
     <abbr class="phpdocumentor-element-found-in__file" title="Model/Query.php"><a href="files/model-query.html"><abbr title="Model/Query.php">Query.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">153</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Retrieves the items from the database (using the set where-clause, order-clause and the given
 constraints) and calculates the total items and pages needed.</p>
@@ -942,8 +942,7 @@ constraints) and calculates the total items and pages needed.</p>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                 <span class="phpdocumentor-tag-link"><abbr title="\InvalidArgumentException">InvalidArgumentException</abbr></span>
                                                             
-                                                 <section class="phpdocumentor-description"></section>
-
+                                             
                                     </dd>
                         </dl>
 
@@ -969,7 +968,8 @@ constraints) and calculates the total items and pages needed.</p>
     <abbr class="phpdocumentor-element-found-in__file" title="Model/Query.php"><a href="files/model-query.html"><abbr title="Model/Query.php">Query.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">198</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Retrieves the raw items from the database (using the set where-clause, order-clause and the given
 constraints) and calculates the total items and pages needed.</p>
@@ -1030,8 +1030,7 @@ constraints) and calculates the total items and pages needed.</p>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                 <span class="phpdocumentor-tag-link"><abbr title="\InvalidArgumentException">InvalidArgumentException</abbr></span>
                                                             
-                                                 <section class="phpdocumentor-description"></section>
-
+                                             
                                     </dd>
                         </dl>
 
@@ -1044,6 +1043,68 @@ constraints) and calculates the total items and pages needed.</p>
     
 </article>
             </section>
+
+        
+    <script type="text/javascript">
+        function loadExternalCodeSnippets(line) {
+            Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach((pre) => {
+                var src = pre.getAttribute('data-src').replace( /\\/g, '/');
+                var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
+                var language = 'php';
+
+                var code = document.createElement('code');
+                code.className = 'language-' + language;
+
+                pre.textContent = '';
+
+                pre.setAttribute('data-line', line)
+                code.textContent = 'Loading…';
+
+                pre.appendChild(code);
+
+                var xhr = new XMLHttpRequest();
+
+                xhr.open('GET', src, true);
+
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4) {
+
+                        if (xhr.status < 400 && xhr.responseText) {
+                            code.textContent = xhr.responseText;
+
+                            Prism.highlightElement(code);
+                        }
+                        else if (xhr.status >= 400) {
+                            code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                        }
+                        else {
+                            code.textContent = '✖ Error: File does not exist, is empty or trying to view from localhost';
+                        }
+                    }
+                };
+
+                xhr.send(null);
+            });
+        }
+
+        var modals = document.querySelectorAll("[data-modal]");
+
+        modals.forEach(function (trigger) {
+            trigger.addEventListener("click", function (event) {
+                //event.preventDefault();
+                const modal = document.getElementById(trigger.dataset.modal);
+                modal.classList.add("phpdocumentor-modal__open");
+                loadExternalCodeSnippets(trigger.dataset.line)
+                const exits = modal.querySelectorAll("[data-exit-button]");
+                exits.forEach(function (exit) {
+                    exit.addEventListener("click", function (event) {
+                        event.preventDefault();
+                        modal.classList.remove("phpdocumentor-modal__open");
+                    });
+                });
+            });
+        });
+    </script>
 
     </article>
                 <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
@@ -1066,5 +1127,9 @@ constraints) and calculates the total items and pages needed.</p>
     <script>
         cssVars({});
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
 </body>
 </html>
